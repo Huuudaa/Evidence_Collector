@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence Collector &amp; Compliance Pack</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --blue:#5BA4D8; --blue-light:#A8D5F5; --blue-pale:#D6EDFB;
+  --pink:#F9D0E2; --pink-dark:#C87090;
+  --beige:#EDE0C8; --beige-dark:#A08050;
+  --bg:#F2F7FB; --surface:#FFFFFF;
+  --text:#1E2D3D; --text2:#6B7C8D; --text3:#A0ADB8;
+  --divider:#E4EDF5;
+  --green:#8DD5B0; --green-bg:#EAF8F2; --green-text:#1A6B48;
+  --amber:#F0C97A; --amber-bg:#FBF4E0; --amber-text:#7A5200;
+  --red:#F0A0A0;   --red-bg:#FBEDED;   --red-text:#8B2020;
+  --terminal:#192434; --term-text:#C0DFFF; --term-label:#7BAEC8;
+  --radius:14px; --shadow:0 2px 12px rgba(91,164,216,.12);
+}
+body { font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;
+  background:var(--bg); color:var(--text); font-size:14px; min-height:100vh; }
+
+/* Navbar */
+.navbar { background:linear-gradient(135deg,var(--blue) 0%,#90C8EB 100%);
+  padding:14px 28px; display:flex; align-items:center; gap:14px;
+  box-shadow:0 2px 12px rgba(91,164,216,.25); position:sticky; top:0; z-index:100; }
+.navbar-logo { width:36px; height:36px; background:rgba(255,255,255,.22);
+  border-radius:10px; display:flex; align-items:center; justify-content:center; }
+.navbar-logo svg { width:20px; height:20px; fill:white; }
+.navbar-title { color:white; font-weight:700; font-size:16px; }
+.navbar-sub   { color:rgba(255,255,255,.8); font-size:11px; margin-top:1px; }
+.navbar-badge { margin-left:auto; background:rgba(255,255,255,.18);
+  border-radius:8px; padding:5px 14px; color:white; font-size:11px; font-weight:600; }
+
+/* Container */
+.container { max-width:960px; margin:0 auto; padding:24px 16px; }
+
+/* Cards */
+.card { background:var(--surface); border-radius:var(--radius);
+  padding:20px; margin-bottom:16px; box-shadow:var(--shadow); }
+.card-label { font-size:10px; font-weight:700; letter-spacing:.12em;
+  color:var(--text3); text-transform:uppercase; margin-bottom:12px; }
+
+/* Upload zone */
+.upload-zone { border:2px dashed var(--blue-light); border-radius:var(--radius);
+  padding:52px 24px; text-align:center; cursor:pointer; transition:all .2s;
+  background:var(--blue-pale); }
+.upload-zone:hover,.upload-zone.drag-over { border-color:var(--blue); background:#C4E4F8; }
+.upload-icon { font-size:52px; margin-bottom:12px; }
+.upload-title { font-size:16px; font-weight:600; color:#3D84BC; margin-bottom:6px; }
+.upload-sub   { font-size:12px; color:var(--text2); }
+
+/* Buttons */
+.btn { display:inline-flex; align-items:center; gap:8px; padding:11px 22px;
+  border:none; border-radius:10px; font-size:14px; font-weight:600;
+  cursor:pointer; transition:all .15s; font-family:inherit; }
+.btn:disabled { opacity:.45; cursor:not-allowed; }
+.btn-primary  { background:var(--blue); color:white; }
+.btn-primary:hover:not(:disabled) { background:#4A90C8; }
+.btn-pink   { background:var(--pink);  color:var(--pink-dark); }
+.btn-pink:hover:not(:disabled)  { background:#f0c0d5; }
+.btn-beige  { background:var(--beige); color:var(--beige-dark); }
+.btn-beige:hover:not(:disabled) { background:#dfd0b5; }
+
+/* Progress */
+.progress-card { background:var(--blue-pale); border:1px solid var(--blue-light); }
+.pbar-wrap { background:#C8DDF0; border-radius:4px; height:6px; overflow:hidden; margin:10px 0; }
+.pbar-fill { height:100%; background:var(--blue); border-radius:4px; transition:width .4s ease; }
+.step-list { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+.step-item { display:flex; align-items:center; gap:10px; padding:8px 12px;
+  border-radius:8px; font-size:12px; transition:all .2s; }
+.step-item.done    { background:var(--green-bg);  color:var(--green-text); }
+.step-item.active  { background:var(--blue-pale); color:#3D84BC; }
+.step-item.pending { color:var(--text3); }
+.step-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; background:currentColor; }
+.step-item.active .step-dot { animation:pulse 1.2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.6)} }
+
+/* Stats grid */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.stat-box { background:var(--surface); border-radius:var(--radius);
+  padding:16px; text-align:center; box-shadow:var(--shadow); }
+.stat-val   { font-size:26px; font-weight:700; color:#3D84BC; }
+.stat-label { font-size:11px; color:var(--text2); margin-top:4px; }
+
+/* Tabs */
+.tabs { display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; }
+.tab { padding:8px 16px; border-radius:8px; font-size:12px; font-weight:600;
+  cursor:pointer; border:1px solid var(--divider); background:var(--surface);
+  color:var(--text2); transition:all .15s; }
+.tab.active { background:var(--blue); color:white; border-color:var(--blue); }
+.tab-panel  { display:none; }
+.tab-panel.active { display:block; }
+
+/* Table */
+.tbl-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { background:var(--blue-light); color:var(--text); padding:8px 10px;
+  text-align:left; font-weight:700; font-size:11px; }
+td { padding:7px 10px; border-bottom:1px solid var(--divider); vertical-align:top; }
+tr:nth-child(even) td { background:#F8FBFD; }
+
+/* Badges */
+.badge { display:inline-block; padding:2px 10px; border-radius:99px; font-size:11px; font-weight:700; }
+.b-ok     { background:var(--green-bg); color:var(--green-text); border:1px solid var(--green); }
+.b-warn   { background:var(--amber-bg); color:var(--amber-text); border:1px solid var(--amber); }
+.b-danger { background:var(--red-bg);   color:var(--red-text);   border:1px solid var(--red); }
+.b-neutral{ background:#F5F5F5; color:var(--text2); border:1px solid var(--divider); }
+
+/* Info rows */
+.irow { display:flex; justify-content:space-between; align-items:center;
+  padding:7px 0; border-bottom:1px solid var(--divider); font-size:13px; }
+.irow:last-child { border-bottom:none; }
+.ilabel { color:var(--text2); flex:1; }
+.ivalue { font-weight:600; flex:2; text-align:right; word-break:break-all; }
+
+/* AI card */
+.ai-card { background:linear-gradient(135deg,var(--blue-pale),var(--pink) 160%);
+  border-radius:var(--radius); padding:18px; }
+.ai-rec  { background:white; border-radius:8px; padding:8px 12px;
+  font-size:12px; color:#3D84BC; margin:4px 0; line-height:1.5; }
+
+/* Score */
+.score-circle { text-align:center; padding:16px; border-radius:12px; background:var(--bg); margin-bottom:14px; }
+.score-big    { font-size:44px; font-weight:800; }
+
+/* Hero */
+.hero { background:linear-gradient(135deg,var(--blue-pale),var(--pink) 200%);
+  border-radius:var(--radius); padding:28px; margin-bottom:20px; border:1px solid var(--blue-light); }
+.hero h2 { font-size:20px; color:#3D84BC; margin-bottom:8px; }
+.hero p  { font-size:13px; color:var(--text2); line-height:1.7; }
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.chip  { background:white; border-radius:8px; padding:5px 14px; font-size:12px;
+  color:#3D84BC; font-weight:600; border:1px solid var(--blue-light); }
+
+/* Spinner */
+.spinner-card { text-align:center; padding:44px 24px; }
+.spin-label { font-size:13px; color:var(--text2); margin-bottom:14px; }
+.spin-sub   { font-size:11px; color:var(--text3); margin-top:10px; }
+
+/* Utils */
+.hidden { display:none !important; }
+.mono   { font-family:monospace; }
+.muted  { color:var(--text2); }
+ul.cl   { padding-left:18px; line-height:2; font-size:13px; }
+
+@media(max-width:640px) {
+  .stats-grid { grid-template-columns:1fr 1fr; }
+  .container  { padding:14px 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar-logo">
+    <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+  </div>
+  <div>
+    <div class="navbar-title">Evidence Collector &amp; Compliance Pack</div>
+    <div class="navbar-sub">Audit de sécurité mobile · MASVS / MASTG</div>
+  </div>
+  <div class="navbar-badge">ENSA Marrakech</div>
+  <button id="btnApiKey" style="background:rgba(255,255,255,.18);border:none;border-radius:8px;padding:5px 12px;color:white;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:6px" title="Configurer la clé API Gemini">&#9881; Clé API</button>
+</nav>
+
+<div class="container">
+
+  <!-- Hero -->
+  <div class="hero" id="heroSection">
+    <h2>Audit statique &amp; dynamique d'APK Android</h2>
+    <p>Déposez un fichier APK pour obtenir un rapport complet : hash, manifest, permissions, SBOM, indicateurs dynamiques, conformité MASVS/MASTG (chap. 4,6,7,9,10,14), analyse IA Gemini, comparaison MobSF.</p>
+    <div class="chips">
+      <span class="chip">Hash SHA-256 / MD5</span>
+      <span class="chip">AndroidManifest</span>
+      <span class="chip">Permissions MASVS</span>
+      <span class="chip">SBOM 35+ libs</span>
+      <span class="chip">Indicateurs dynamiques</span>
+      <span class="chip">Chap. 4,6,7,9,10,14</span>
+      <span class="chip">IA Gemini Flash</span>
+      <span class="chip">Comparaison MobSF</span>
+    </div>
+  </div>
+
+  <!-- Upload card -->
+  <div class="card" id="uploadCard">
+    <div class="card-label">Sélection du fichier APK</div>
+    <div class="upload-zone" id="uploadZone">
+      <div class="upload-icon">📦</div>
+      <div class="upload-title">Glisser-déposer votre APK ici</div>
+      <div class="upload-sub">ou cliquer pour parcourir · max 100 MB</div>
+    </div>
+    <input type="file" id="fileInput" accept=".apk" style="display:none">
+
+    <div id="fileSelected" class="hidden" style="margin-top:14px">
+      <div style="background:var(--green-bg);border:1px solid var(--green);border-radius:10px;
+                  padding:12px 16px;display:flex;align-items:center;gap:12px">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0"></div>
+        <div>
+          <div style="font-weight:600;font-size:13px" id="selName">—</div>
+          <div style="font-size:11px;color:var(--text2)" id="selSize">—</div>
+        </div>
+        <button class="btn btn-primary" id="btnAnalyze" style="margin-left:auto">
+          Lancer l'analyse
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress card -->
+  <div class="card progress-card hidden" id="progressCard">
+    <div class="card-label">Analyse en cours</div>
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:13px;color:#3D84BC;font-weight:600" id="progLabel">Initialisation...</span>
+      <span style="font-size:11px;color:var(--text2)" id="progPct">0 %</span>
+    </div>
+    <div class="pbar-wrap"><div class="pbar-fill" id="progFill" style="width:0%"></div></div>
+    <div class="step-list" id="stepList"></div>
+  </div>
+
+  <!-- Results -->
+  <div id="resultsSection" class="hidden">
+
+    <!-- Risk banner -->
+    <div class="card" id="riskBanner" style="padding:16px 20px"></div>
+
+    <!-- Stats -->
+    <div class="stats-grid" id="statsGrid"></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <div class="tab active" data-tab="overview">Vue d'ensemble</div>
+      <div class="tab" data-tab="static">Audit statique</div>
+      <div class="tab" data-tab="dynamic">Indicateurs dynamiques</div>
+      <div class="tab" data-tab="masvs">MASVS / MASTG</div>
+      <div class="tab" data-tab="mobsf">Comparaison MobSF</div>
+      <div class="tab" data-tab="ai">Analyse IA</div>
+    </div>
+
+    <!-- Tab panels -->
+    <div class="tab-panel active" id="tab-overview">
+      <div class="card"><div class="card-label">Informations APK</div><div id="ovInfo"></div></div>
+      <div class="card"><div class="card-label">Empreintes cryptographiques</div><div id="ovHash"></div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-static">
+      <div class="card"><div class="card-label">Analyse des permissions</div><div id="stPerms"></div></div>
+      <div class="card"><div class="card-label">SBOM — Bibliothèques &amp; libs natives</div><div id="stSbom"></div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-dynamic">
+      <div class="card"><div class="card-label">Indicateurs de comportement dynamique</div><div id="dynTable"></div></div>
+      <div class="card hidden" id="secretsCard"><div class="card-label">Secrets et données sensibles détectés</div><div id="dynSecrets"></div></div>
+    </div>
+
+    <div class="tab-panel" id="tab-masvs">
+      <div class="card">
+        <div class="card-label">Score de conformité MASVS / MASTG</div>
+        <div class="score-circle" id="masvsScore"></div>
+        <div class="tbl-wrap" id="masvsTable"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-mobsf">
+      <div class="card">
+        <div class="card-label">Comparaison avec MobSF (Mobile Security Framework)</div>
+        <div id="mobsfIntro" style="background:var(--blue-pale);border-radius:10px;padding:14px;margin-bottom:14px;font-size:13px;color:#3D84BC;line-height:1.7"></div>
+        <div class="tbl-wrap" id="mobsfTable"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="tab-ai">
+      <div id="aiContent">
+        <div class="card spinner-card">
+          <div class="spin-label">Analyse IA en cours — Gemini Flash</div>
+          <div class="pbar-wrap" style="max-width:280px;margin:0 auto">
+            <div class="pbar-fill" style="width:55%"></div>
+          </div>
+          <div class="spin-sub">Les résultats apparaîtront ici</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export -->
+    <div class="card" style="padding:16px">
+      <div class="card-label">Exporter le rapport</div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+        <button class="btn btn-primary"  id="btnHtml">Télécharger rapport HTML</button>
+        <button class="btn btn-beige"    id="btnJson">Télécharger JSON brut</button>
+        <button class="btn btn-pink"     id="btnReset">Nouvelle analyse</button>
+      </div>
+    </div>
+
+  </div><!-- /resultsSection -->
+</div><!-- /container -->
+
+<script>
+"use strict";
+
+// ── State ──────────────────────────────────────────────────
+var selFile = null, taskId = null, analysisData = null;
+
+// ── Upload ─────────────────────────────────────────────────
+var zone  = document.getElementById("uploadZone");
+var input = document.getElementById("fileInput");
+
+zone.addEventListener("click", function() { input.click(); });
+
+zone.addEventListener("dragover", function(e) {
+  e.preventDefault(); zone.classList.add("drag-over");
+});
+zone.addEventListener("dragleave", function() {
+  zone.classList.remove("drag-over");
+});
+zone.addEventListener("drop", function(e) {
+  e.preventDefault(); zone.classList.remove("drag-over");
+  var f = e.dataTransfer.files[0];
+  if (f) setFile(f);
+});
+input.addEventListener("change", function() {
+  if (input.files[0]) setFile(input.files[0]);
+});
+
+function setFile(f) {
+  selFile = f;
+  document.getElementById("selName").textContent = f.name;
+  document.getElementById("selSize").textContent = (f.size/1048576).toFixed(2) + " MB";
+  document.getElementById("fileSelected").classList.remove("hidden");
+}
+
+// ── Analyze ─────────────────────────────────────────────────
+document.getElementById("btnAnalyze").addEventListener("click", runAnalysis);
+
+var STEPS = [
+  "Calcul des empreintes SHA-256 / MD5",
+  "Extraction AndroidManifest.xml",
+  "Analyse des permissions",
+  "Génération du SBOM",
+  "Extraction des chaînes (strings)",
+  "Analyse des indicateurs dynamiques",
+  "Vérification conformité MASVS",
+  "Analyse IA — Gemini Flash",
+  "Génération du rapport HTML"
+];
+
+var stepTimer = null, stepIdx = 0;
+
+function buildSteps() {
+  var html = "";
+  for (var i = 0; i < STEPS.length; i++) {
+    html += '<div class="step-item pending" id="st-'+i+'">'
+          + '<div class="step-dot"></div><span>'+esc(STEPS[i])+'</span></div>';
+  }
+  document.getElementById("stepList").innerHTML = html;
+}
+
+function tickStep() {
+  if (stepIdx >= STEPS.length) return;
+  if (stepIdx > 0) {
+    var prev = document.getElementById("st-"+(stepIdx-1));
+    if (prev) prev.className = "step-item done";
+  }
+  var curr = document.getElementById("st-"+stepIdx);
+  if (curr) curr.className = "step-item active";
+  document.getElementById("progLabel").textContent = STEPS[stepIdx];
+  var pct = Math.round((stepIdx / STEPS.length) * 90);
+  document.getElementById("progPct").textContent = pct + " %";
+  document.getElementById("progFill").style.width = pct + "%";
+  stepIdx++;
+  stepTimer = setTimeout(tickStep, 700 + Math.random() * 500);
+}
+
+function runAnalysis() {
+  if (!selFile) return;
+  stepIdx = 0;
+  document.getElementById("uploadCard").classList.add("hidden");
+  document.getElementById("heroSection").classList.add("hidden");
+  document.getElementById("resultsSection").classList.add("hidden");
+  document.getElementById("progressCard").classList.remove("hidden");
+  document.getElementById("aiContent").innerHTML =
+    '<div class="card spinner-card"><div class="spin-label">Analyse IA en cours...</div>'
+    +'<div class="pbar-wrap" style="max-width:280px;margin:0 auto"><div class="pbar-fill" style="width:55%"></div></div>'
+    +'<div class="spin-sub">Les résultats apparaîtront ici</div></div>';
+
+  buildSteps();
+  tickStep();
+
+  var fd = new FormData();
+  fd.append("apk", selFile);
+
+  fetch("/api/analyze", { method:"POST", body:fd })
+    .then(function(r) {
+      if (!r.ok) return r.json().then(function(e) { throw new Error(e.error || "Erreur serveur"); });
+      return r.json();
+    })
+    .then(function(data) {
+      clearTimeout(stepTimer);
+      for (var i = 0; i < STEPS.length; i++) {
+        var el = document.getElementById("st-"+i);
+        if (el) el.className = "step-item done";
+      }
+      document.getElementById("progFill").style.width = "100%";
+      document.getElementById("progPct").textContent = "100 %";
+      document.getElementById("progLabel").textContent = "Analyse terminée";
+
+      setTimeout(function() {
+        analysisData = data;
+        taskId = data.task_id;
+        document.getElementById("progressCard").classList.add("hidden");
+        document.getElementById("resultsSection").classList.remove("hidden");
+        buildUI(data);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        callGeminiFromBrowser(data);
+      }, 500);
+    })
+    .catch(function(err) {
+      clearTimeout(stepTimer);
+      document.getElementById("progressCard").classList.add("hidden");
+      document.getElementById("uploadCard").classList.remove("hidden");
+      document.getElementById("heroSection").classList.remove("hidden");
+      alert("Erreur : " + err.message);
+    });
+}
+
+// ── Build UI ────────────────────────────────────────────────
+function buildUI(d) {
+  var m     = d.manifest    || {};
+  var perms = d.permissions || {};
+  var sbom  = d.sbom        || {};
+  var strs  = d.strings     || {};
+  var masvs = d.masvs       || {};
+  var hsh   = d.hashes      || {};
+  var ai    = d.ai          || {};
+  var mobsf = d.mobsf_comparison || {};
+  var risk  = d.overall_risk_level || "MOYEN";
+  var score = masvs.score || 0;
+  var total = masvs.total  || 12;
+
+  var riskColor = {CRITIQUE:"#8B2020", "ÉLEVÉ":"#7A5200", ELEVE:"#7A5200", MOYEN:"#7A5200", FAIBLE:"#1A6B48"}[risk] || "#6B7C8D";
+  var riskBg    = {CRITIQUE:"#FBEDED", "ÉLEVÉ":"#FBF4E0", ELEVE:"#FBF4E0", MOYEN:"#FBF4E0", FAIBLE:"#EAF8F2"}[risk] || "#F5F5F5";
+
+  // Risk banner
+  document.getElementById("riskBanner").innerHTML =
+    '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">'
+    +'<div>'
+    +'<div style="font-size:10px;font-weight:700;letter-spacing:.1em;color:var(--text2);text-transform:uppercase;margin-bottom:4px">Résultat de l\'analyse</div>'
+    +'<div style="font-size:15px;font-weight:700">'+esc(m.package_name || d.filename)+'</div>'
+    +'<div style="font-size:12px;color:var(--text2);margin-top:2px">'+esc(d.analyzed_at)+'</div>'
+    +'</div>'
+    +'<div style="display:flex;gap:10px;flex-wrap:wrap">'
+    +'<div style="background:'+riskBg+';border-radius:10px;padding:10px 18px;text-align:center">'
+    +'<div style="font-size:18px;font-weight:800;color:'+riskColor+'">'+esc(risk)+'</div>'
+    +'<div style="font-size:11px;color:var(--text2)">Risque global</div>'
+    +'</div>'
+    +'<div style="background:var(--blue-pale);border-radius:10px;padding:10px 18px;text-align:center">'
+    +'<div style="font-size:18px;font-weight:800;color:#3D84BC">'+score+'/'+total+'</div>'
+    +'<div style="font-size:11px;color:var(--text2)">Score MASVS</div>'
+    +'</div>'
+    +'</div></div>';
+
+  // Stats
+  document.getElementById("statsGrid").innerHTML =
+    statBox(perms.total || 0, "Permissions", "")
+    + statBox(perms.high_count || 0, "Dangereuses", "color:var(--red-text)")
+    + statBox(sbom.total || 0, "Libs (SBOM)", "")
+    + statBox(strs.url_count || 0, "URLs détectées", "");
+
+  // Overview
+  document.getElementById("ovInfo").innerHTML = irows([
+    ["Fichier",         esc(d.filename)],
+    ["Package",         esc(m.package_name)],
+    ["Version",         esc(m.version_name)+" (code "+esc(m.version_code)+")"],
+    ["SDK Min / Target",esc(m.min_sdk)+" / "+esc(m.target_sdk)],
+    ["Activities",      (m.activities||[]).length],
+    ["Services",        (m.services||[]).length],
+    ["Receivers",       (m.receivers||[]).length],
+    ["Débogage",        m.debuggable ? bdg("b-danger","OUI") : bdg("b-ok","Non")],
+    ["AllowBackup",     m.allow_backup ? bdg("b-warn","OUI") : bdg("b-ok","Non")],
+    ["Cleartext HTTP",  m.uses_cleartext ? bdg("b-danger","OUI") : bdg("b-ok","Non")],
+    ["Network Sec. Config", m.has_network_security_config ? bdg("b-ok","Présent") : bdg("b-warn","Absent")],
+  ]);
+
+  document.getElementById("ovHash").innerHTML = irows([
+    ["Taille",   esc(hsh.size_mb)+" MB ("+((hsh.size_bytes||0).toLocaleString())+" octets)"],
+    ["SHA-256",  '<span class="mono" style="font-size:11px">'+esc(hsh.sha256)+'</span>'],
+    ["MD5",      '<span class="mono" style="font-size:11px">'+esc(hsh.md5)+'</span>'],
+  ]);
+
+  // Permissions
+  var prows = "";
+  (perms.dangerous||[]).forEach(function(p) {
+    prows += '<tr><td style="font-weight:600;color:var(--red-text)">'+esc(p.name)+'</td>'
+      +'<td>'+bdg("b-danger",p.risk)+'</td>'
+      +'<td style="font-size:11px;color:var(--text2)">'+esc(p.masvs||"")+'</td>'
+      +'<td>'+esc(p.chapter||"")+'</td></tr>';
+  });
+  (perms.normal||[]).forEach(function(p) {
+    prows += '<tr><td style="color:#3D84BC">'+esc(p.name)+'</td>'
+      +'<td>'+bdg("b-ok","Normale")+'</td><td>—</td><td>—</td></tr>';
+  });
+  document.getElementById("stPerms").innerHTML =
+    '<div class="tbl-wrap"><table>'
+    +'<tr><th>Permission</th><th>Risque</th><th>MASVS</th><th>Chap.</th></tr>'
+    +prows+'</table></div>';
+
+  // SBOM
+  var lrows = "";
+  (sbom.libraries||[]).forEach(function(l) {
+    lrows += '<tr><td>'+esc(l.name)+'</td>'
+      +'<td style="color:var(--text2)">'+esc(l.vendor)+'</td>'
+      +'<td><span style="background:var(--beige);border-radius:99px;padding:1px 8px;font-size:11px">'+esc(l.type)+'</span></td>'
+      +'<td>'+(l.risky ? bdg("b-danger","Debug/Risqué") : bdg("b-ok","OK"))+'</td></tr>';
+  });
+  var nrows = "";
+  (sbom.native_libs||[]).forEach(function(n) {
+    nrows += '<tr><td colspan="3" class="mono" style="font-size:11px;color:var(--text2)">'+esc(n.path)+'</td>'
+      +'<td>'+esc(n.size_kb)+' KB</td></tr>';
+  });
+  document.getElementById("stSbom").innerHTML =
+    '<div class="tbl-wrap"><table>'
+    +'<tr><th>Bibliothèque</th><th>Vendor</th><th>Type</th><th>Statut</th></tr>'
+    +lrows
+    +(nrows ? '<tr><td colspan="4" style="font-weight:700;color:#3D84BC;padding-top:10px">Libs natives (.so) — '+esc(sbom.native_count)+'</td></tr>'+nrows : "")
+    +'</table></div>'
+    +'<p style="font-size:11px;color:var(--text2);margin-top:8px">'
+    +esc(sbom.dex_count)+' fichier(s) DEX · '+esc(sbom.total_entries)+' entrées ZIP</p>';
+
+  // Dynamic
+  var dyn = strs.dynamic_indicators || {};
+  var dynChecks = [
+    ["Obfuscation (ProGuard/R8)", strs.has_obfuscation, dyn.obfuscation||[], "Protège contre le reverse engineering"],
+    ["SSL Pinning",               strs.has_ssl_pinning,  dyn.ssl_pinning||[], "Valide le certificat serveur"],
+    ["Détection root/jailbreak",  strs.has_root_check,   dyn.root_detection||[], "Empêche l'exécution sur device rooté"],
+    ["Anti-débogage",             !!(dyn.anti_debug&&dyn.anti_debug.length), dyn.anti_debug||[], "Empêche l'attache d'un débogueur"],
+    ["Détection émulateur",       !!(dyn.emulator_detection&&dyn.emulator_detection.length), dyn.emulator_detection||[], "Empêche l'exécution en émulateur"],
+    ["Chargement dynamique",      !!(dyn.dynamic_code_loading&&dyn.dynamic_code_loading.length), dyn.dynamic_code_loading||[], "Chargement de code à l'exécution"],
+    ["Usage de cryptographie",    strs.has_crypto, dyn.crypto_usage||[], "Utilisation de primitives crypto"],
+    ["Réflexion Java",            !!(dyn.reflection&&dyn.reflection.length), dyn.reflection||[], "Appels dynamiques par réflexion"],
+  ];
+  var dynRows = "";
+  dynChecks.forEach(function(c) {
+    dynRows += '<tr><td><b>'+esc(c[0])+'</b></td>'
+      +'<td>'+(c[1] ? bdg("b-ok","Détecté") : bdg("b-warn","Absent"))+'</td>'
+      +'<td style="font-size:11px;color:var(--text2);font-family:monospace">'+c[2].slice(0,4).map(esc).join(", ")+'</td>'
+      +'<td style="font-size:11px;color:var(--text2)">'+esc(c[3])+'</td></tr>';
+  });
+  document.getElementById("dynTable").innerHTML =
+    '<div class="tbl-wrap"><table>'
+    +'<tr><th>Indicateur</th><th>Présence</th><th>Éléments</th><th>Description</th></tr>'
+    +dynRows+'</table></div>';
+
+  var secrets = strs.findings || {};
+  if (Object.keys(secrets).length > 0) {
+    document.getElementById("secretsCard").classList.remove("hidden");
+    var srows = "";
+    Object.keys(secrets).forEach(function(k) {
+      var isHigh = ["api_keys","aws_keys","private_keys","jwt_tokens"].indexOf(k) >= 0;
+      srows += '<tr><td><b>'+esc(k)+'</b></td>'
+        +'<td>'+(isHigh ? bdg("b-danger","Critique") : bdg("b-ok","Info"))+'</td>'
+        +'<td style="font-size:11px;font-family:monospace">'+secrets[k].slice(0,3).map(esc).join(", ")+'</td></tr>';
+    });
+    document.getElementById("dynSecrets").innerHTML =
+      '<div class="tbl-wrap"><table>'
+      +'<tr><th>Type</th><th>Niveau</th><th>Exemples (anonymisés)</th></tr>'
+      +srows+'</table></div>';
+  }
+
+  // MASVS
+  var sc = masvs.score || 0, tot = masvs.total || 12;
+  var pct = masvs.percentage || 0;
+  var sc_color = pct >= 75 ? "var(--green-text)" : pct >= 50 ? "var(--amber-text)" : "var(--red-text)";
+  document.getElementById("masvsScore").innerHTML =
+    '<div class="score-big" style="color:'+sc_color+'">'+sc+'/'+tot+'</div>'
+    +'<div style="font-size:12px;color:var(--text2);margin-top:4px">'+pct+'% de conformité MASVS/MASTG</div>';
+
+  var masvsReqs = [
+    ["MASVS-STORAGE-1","Données sensibles non stockées en clair",4],
+    ["MASVS-STORAGE-2","Aucune donnée sensible exposée via logs / IPC",4],
+    ["MASVS-CRYPTO-1","Algorithmes cryptographiques solides",6],
+    ["MASVS-CRYPTO-2","Clés cryptographiques gérées de façon sécurisée",6],
+    ["MASVS-AUTH-1","Authentification forte côté serveur",7],
+    ["MASVS-AUTH-2","Aucune donnée sensible dans les tokens",7],
+    ["MASVS-NETWORK-1","TLS obligatoire pour toutes les connexions",9],
+    ["MASVS-NETWORK-2","Validation correcte du certificat TLS",9],
+    ["MASVS-CODE-1","Pas de bibliothèques vulnérables connues",10],
+    ["MASVS-CODE-2","Aucun code de debug en production",10],
+    ["MASVS-RESILIENCE-1","Protection contre le reverse engineering",14],
+    ["MASVS-RESILIENCE-2","Protection contre la falsification",14],
+  ];
+  var mrows = "";
+  masvsReqs.forEach(function(r) {
+    var res = (masvs.results||{})[r[0]] || {};
+    mrows += '<tr><td><b>'+esc(r[0])+'</b></td><td>'+esc(r[1])+'</td><td>'+r[2]+'</td>'
+      +'<td>'+(res.pass ? bdg("b-ok","Vérifié") : bdg("b-danger","Manquant"))+'</td>'
+      +'<td style="font-size:11px;color:var(--text2)">'+esc(res.details||"")+'</td></tr>';
+  });
+  document.getElementById("masvsTable").innerHTML =
+    '<table><tr><th>Exigence</th><th>Description</th><th>Chap.</th><th>Statut</th><th>Détails</th></tr>'
+    +mrows+'</table>';
+
+  // MobSF
+  var cov = mobsf.coverage_pct || 0;
+  document.getElementById("mobsfIntro").innerHTML =
+    'Notre outil couvre <b>'+cov+'%</b> des vérifications MobSF. '
+    +'Avantage exclusif : <b>analyse IA (Gemini Flash)</b> — non disponible dans MobSF. '
+    +'MobSF propose en plus l\'interception de trafic en temps réel et les hooks Frida/Xposed.';
+  var mchecks = mobsf.checks || [];
+  var mcRows = "";
+  mchecks.forEach(function(c) {
+    mcRows += '<tr><td>'+esc(c.check)+'</td>'
+      +'<td style="font-size:11px;color:var(--text2)">'+esc(c.category)+'</td>'
+      +'<td>'+(c.mobsf ? bdg("b-ok","Oui") : bdg("b-neutral","Non"))+'</td>'
+      +'<td>'+(c.ours  ? bdg("b-ok","Oui") : bdg("b-neutral","Non"))+'</td></tr>';
+  });
+  document.getElementById("mobsfTable").innerHTML =
+    '<div class="tbl-wrap"><table>'
+    +'<tr><th>Vérification</th><th>Catégorie</th><th>MobSF</th><th>Evidence Collector</th></tr>'
+    +mcRows+'</table></div>';
+}
+
+// ── Gemini — appel depuis le navigateur ────────────────────
+var GEMINI_KEY    = localStorage.getItem("gemini_key") || "AIzaSyA0GXyrIG6YIQxzKHOYz140mZQ6tpUamUk";
+var GEMINI_MODELS = ["gemini-2.0-flash","gemini-2.0-flash-exp","gemini-1.5-flash","gemini-1.5-flash-latest"];
+var GEMINI_BASE   = "https://generativelanguage.googleapis.com/v1beta/models/";
+
+// ── Retry with backoff ───────────────────────────────────
+async function fetchWithRetry(url, opts, maxRetries, baseDelay) {
+  for (var attempt = 0; attempt <= maxRetries; attempt++) {
+    var r = await fetch(url, opts);
+    if (r.status === 429) {
+      if (attempt < maxRetries) {
+        var wait = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
+        updateAiSpinner("Limite Gemini atteinte (429) — nouvel essai dans " + Math.round(wait/1000) + "s...");
+        await new Promise(function(res){ setTimeout(res, wait); });
+        continue;
+      }
+    }
+    return r;
+  }
+}
+
+function updateAiSpinner(msg) {
+  var el = document.getElementById("aiSpinnerMsg");
+  if (el) el.textContent = msg;
+}
+
+async function callGeminiFromBrowser(d) {
+  // Show spinner with retry status
+  document.getElementById("aiContent").innerHTML =
+    '<div class="card spinner-card">'
+    +'<div class="spin-label">Connexion à Gemini Flash...</div>'
+    +'<div class="pbar-wrap" style="max-width:280px;margin:0 auto"><div class="pbar-fill" style="width:55%"></div></div>'
+    +'<div class="spin-sub" id="aiSpinnerMsg">Envoi de la requête...</div>'
+    +'</div>';
+
+
+  var perms    = d.permissions || {};
+  var manifest = d.manifest    || {};
+  var sbom     = d.sbom        || {};
+  var strings  = d.strings     || {};
+  var masvs    = d.masvs       || {};
+
+  var summary = {
+    package:          manifest.package_name || "unknown",
+    dangerous_perms:  (perms.dangerous||[]).map(function(p){ return p.name; }),
+    debuggable:       manifest.debuggable,
+    allow_backup:     manifest.allow_backup,
+    uses_cleartext:   manifest.uses_cleartext,
+    libs:             (sbom.libraries||[]).map(function(l){ return l.name; }),
+    string_findings:  Object.keys(strings.findings||{}),
+    has_ssl_pinning:  strings.has_ssl_pinning,
+    has_root_check:   strings.has_root_check,
+    has_obfuscation:  strings.has_obfuscation,
+    masvs_score:      (masvs.score||0)+"/"+(masvs.total||12),
+    masvs_missing:    masvs.missing || [],
+  };
+
+  var prompt =
+    "Tu es expert securite mobile MASVS/MASTG. " +
+    "Reponds UNIQUEMENT avec un JSON brut (pas de backticks, pas de markdown) avec ces cles:\n" +
+    '{"resume_executif":"...","niveau_risque":"CRITIQUE|ELEVE|MOYEN|FAIBLE",' +
+    '"points_forts":["..."],"vulnerabilites":["..."],"recommandations":["..."],' +
+    '"masvs_analyse":"...","comparaison_mobsf":"..."}\n\nDonnees: ' +
+    JSON.stringify(summary);
+
+  var payload = {
+    contents: [{ parts: [{ text: prompt }] }],
+    generationConfig: { temperature: 0.3, maxOutputTokens: 1500 }
+  };
+
+  var aiResult = null;
+  var usedModel = null;
+  var lastErr = "";
+
+  for (var i = 0; i < GEMINI_MODELS.length; i++) {
+    var model = GEMINI_MODELS[i];
+    try {
+      var r = await fetchWithRetry(
+        GEMINI_BASE + model + ":generateContent?key=" + GEMINI_KEY,
+        { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) },
+        3, 2000
+      );
+      if (!r) { lastErr = "Timeout après 3 retries"; continue; }
+      if (r.status === 200) {
+        var data = await r.json();
+        var text = ((data.candidates||[{}])[0].content||{parts:[{}]}).parts[0].text;
+        if (text) { aiResult = text; usedModel = model; break; }
+      } else if (r.status === 404) {
+        continue;
+      } else if (r.status === 429) {
+        lastErr = "Quota dépassé (429) — essayez plus tard ou changez la clé API";
+        continue;
+      } else {
+        lastErr = "HTTP " + r.status;
+      }
+    } catch(e) { lastErr = e.message; }
+  }
+
+  if (!aiResult) {
+    renderAI(d.ai, "Gemini indisponible ("+lastErr+") — analyse locale affichée.", null);
+    return;
+  }
+
+  var parsed = null;
+  try {
+    var raw = aiResult.trim();
+    if (raw.indexOf("```") >= 0) {
+      raw.split("```").forEach(function(p) {
+        p = p.trim().replace(/^json/,"").trim();
+        if (p.indexOf("{") === 0) raw = p;
+      });
+    }
+    var s = raw.indexOf("{"), e = raw.lastIndexOf("}")+1;
+    if (s >= 0 && e > s) parsed = JSON.parse(raw.slice(s,e));
+  } catch(_) { parsed = null; }
+
+  var finalAI = Object.assign({}, d.ai, parsed || { resume_executif: aiResult.slice(0,400) });
+  renderAI(finalAI, null, usedModel);
+}
+
+
+// ── Clé API settings ────────────────────────────────────
+document.getElementById("btnApiKey").addEventListener("click", function() {
+  var cur = localStorage.getItem("gemini_key") || "";
+  var key = prompt("Entrez votre clé API Gemini (laissez vide pour la clé par défaut) :", cur);
+  if (key !== null) {
+    if (key.trim() === "") {
+      localStorage.removeItem("gemini_key");
+      GEMINI_KEY = "AIzaSyA0GXyrIG6YIQxzKHOYz140mZQ6tpUamUk";
+      alert("Clé par défaut restaurée.");
+    } else {
+      localStorage.setItem("gemini_key", key.trim());
+      GEMINI_KEY = key.trim();
+      alert("Clé API enregistrée.");
+    }
+  }
+});
+
+
+function renderAI(ai, errMsg, model) {
+  if (!ai) return;
+  var modelBadge = model
+    ? ' <span style="background:var(--green-bg);color:var(--green-text);border:1px solid var(--green);'
+      +'border-radius:99px;padding:2px 10px;font-size:11px;font-weight:700">'+esc(model)+'</span>'
+    : (ai && ai._source === "local_analysis"
+      ? ' <span style="background:var(--beige);color:var(--beige-dark);border:1px solid #C9AE88;'
+        +'border-radius:99px;padding:2px 10px;font-size:11px;font-weight:700">Analyse locale</span>'
+      : "");
+  var errHtml = errMsg
+    ? '<div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:10px;'
+      +'padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--amber-text)">'+esc(errMsg)+'</div>'
+    : "";
+  var recs  = (ai.recommandations||[]).map(function(r){ return '<div class="ai-rec">'+esc(r)+'</div>'; }).join("");
+  var pts   = (ai.points_forts||[]).map(function(p){ return '<li>'+esc(p)+'</li>'; }).join("") || "<li>—</li>";
+  var vulns = (ai.vulnerabilites||[]).map(function(v){ return '<li>'+esc(v)+'</li>'; }).join("") || "<li>—</li>";
+
+  document.getElementById("aiContent").innerHTML =
+    errHtml
+    +'<div class="ai-card card" style="margin-bottom:16px">'
+    +'<div class="card-label" style="color:#3D84BC">Résumé exécutif — Gemini Flash'+modelBadge+'</div>'
+    +'<p style="font-size:13px;line-height:1.8;margin-bottom:12px">'+esc(ai.resume_executif||"")+'</p>'
+    +'<div style="margin-bottom:6px"><b style="font-size:12px;color:var(--text2)">Recommandations prioritaires</b></div>'
+    +recs
+    +'</div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'
+    +'<div class="card"><div class="card-label">Points forts</div>'
+    +'<ul class="cl" style="color:var(--green-text)">'+pts+'</ul></div>'
+    +'<div class="card"><div class="card-label">Vulnérabilités identifiées</div>'
+    +'<ul class="cl" style="color:var(--red-text)">'+vulns+'</ul></div>'
+    +'</div>'
+    +(ai.masvs_analyse ? '<div class="card" style="margin-top:12px"><div class="card-label">Analyse MASVS par l\'IA</div>'
+      +'<p style="font-size:13px;line-height:1.7">'+esc(ai.masvs_analyse)+'</p></div>' : "")
+    +(ai.comparaison_mobsf ? '<div class="card" style="margin-top:12px"><div class="card-label">Positionnement vs MobSF</div>'
+      +'<p style="font-size:13px;line-height:1.7">'+esc(ai.comparaison_mobsf)+'</p></div>' : "");
+}
+
+// ── Tabs ────────────────────────────────────────────────────
+document.querySelectorAll(".tab").forEach(function(t) {
+  t.addEventListener("click", function() {
+    document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("active"); });
+    document.querySelectorAll(".tab-panel").forEach(function(x){ x.classList.remove("active"); });
+    t.classList.add("active");
+    var panel = document.getElementById("tab-"+t.dataset.tab);
+    if (panel) panel.classList.add("active");
+  });
+});
+
+// ── Export ──────────────────────────────────────────────────
+document.getElementById("btnHtml").addEventListener("click", function() {
+  if (taskId) window.open("/report/"+taskId, "_blank");
+});
+document.getElementById("btnJson").addEventListener("click", function() {
+  if (taskId) window.open("/report-json/"+taskId, "_blank");
+});
+document.getElementById("btnReset").addEventListener("click", function() {
+  selFile = null; taskId = null; analysisData = null;
+  document.getElementById("fileSelected").classList.add("hidden");
+  document.getElementById("resultsSection").classList.add("hidden");
+  document.getElementById("heroSection").classList.remove("hidden");
+  document.getElementById("uploadCard").classList.remove("hidden");
+  input.value = "";
+  window.scrollTo({ top:0, behavior:"smooth" });
+});
+
+// ── Helpers ─────────────────────────────────────────────────
+function esc(s) {
+  if (s == null) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+}
+function bdg(cls, label) {
+  return '<span class="badge '+cls+'">'+esc(label)+'</span>';
+}
+function statBox(val, label, style) {
+  return '<div class="stat-box"><div class="stat-val" style="'+style+'">'+val+'</div>'
+        +'<div class="stat-label">'+label+'</div></div>';
+}
+function irows(pairs) {
+  return pairs.map(function(p) {
+    return '<div class="irow"><span class="ilabel">'+esc(p[0])+'</span>'
+          +'<span class="ivalue">'+p[1]+'</span></div>';
+  }).join("");
+}
+</script>
+
+</body>
+</html>
