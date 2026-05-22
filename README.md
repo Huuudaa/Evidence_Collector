@@ -285,11 +285,3 @@ Evidence_Collector/
 - Les appels Gemini Flash s'exécutent côté client (JavaScript) ; la clé API doit être gérée avec précaution.
 
 ---
-
-## Disponibilité
-
-- **Licence** : MIT
-- **Version** : v1.0.0
-- **Dépôt GitHub** : https://github.com/Huuudaa/Evidence_Collector/releases/tag/v1.0.0
-- **Archive permanente** : DOI Zenodo à assigner après publication
-- **Contact** : m.lachgar@uca.ac.ma
