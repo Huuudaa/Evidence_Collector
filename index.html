@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evidence Collector & Compliance Pack</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --mauve-950: #0e0714;
+    --mauve-900: #160d22;
+    --mauve-800: #230f38;
+    --mauve-700: #3b1660;
+    --mauve-600: #5c2d91;
+    --mauve-500: #7c3aed;
+    --mauve-400: #a855f7;
+    --mauve-300: #c084fc;
+    --mauve-200: #ddb6fc;
+    --mauve-100: #f3e8ff;
+    --accent: #e879f9;
+    --accent2: #38bdf8;
+    --gold: #fbbf24;
+    --white: #faf5ff;
+    --text-muted: #a78bca;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--mauve-950);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    pointer-events: none;
+  }
+
+  /* ── GLOW BLOBS ── */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(124,58,237,.35) 0%, transparent 70%); top: -200px; left: -200px; }
+  .blob-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(232,121,249,.2) 0%, transparent 70%); top: 40vh; right: -150px; }
+  .blob-3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(56,189,248,.15) 0%, transparent 70%); bottom: 10vh; left: 10%; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    backdrop-filter: blur(20px);
+    background: rgba(14,7,20,.7);
+    border-bottom: 1px solid rgba(168,85,247,.12);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: var(--mauve-300);
+    letter-spacing: .04em;
+  }
+  .nav-logo span { color: var(--accent); }
+  nav ul { display: flex; gap: 2.5rem; list-style: none; }
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: .875rem;
+    font-weight: 400;
+    letter-spacing: .04em;
+    transition: color .2s;
+  }
+  nav a:hover { color: var(--mauve-300); }
+  .nav-cta {
+    background: linear-gradient(135deg, var(--mauve-600), var(--accent));
+    color: #fff !important;
+    padding: .5rem 1.3rem;
+    border-radius: 2rem;
+    font-weight: 500 !important;
+  }
+  .nav-cta:hover { opacity: .85; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 8rem 2rem 4rem;
+  }
+  .hero-inner { max-width: 900px; }
+
+  .badge {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: rgba(124,58,237,.15);
+    border: 1px solid rgba(168,85,247,.3);
+    padding: .35rem 1rem;
+    border-radius: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    color: var(--mauve-300);
+    margin-bottom: 2rem;
+    letter-spacing: .06em;
+    animation: fadeUp .6s ease both;
+  }
+  .badge::before { content: '●'; color: var(--accent); font-size: .5rem; }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.8rem, 6vw, 5.5rem);
+    line-height: 1.08;
+    margin-bottom: 1.5rem;
+    animation: fadeUp .6s ease .1s both;
+  }
+  h1 .line2 {
+    background: linear-gradient(90deg, var(--mauve-300), var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+    max-width: 680px;
+    margin: 0 auto 2.5rem;
+    animation: fadeUp .6s ease .2s both;
+  }
+
+  .hero-btns {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp .6s ease .3s both;
+  }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: linear-gradient(135deg, var(--mauve-600), var(--accent));
+    color: #fff;
+    padding: .8rem 2rem;
+    border-radius: .6rem;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: transform .2s, box-shadow .2s;
+    box-shadow: 0 4px 30px rgba(168,85,247,.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(168,85,247,.5); }
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: transparent;
+    color: var(--mauve-300);
+    padding: .8rem 2rem;
+    border-radius: .6rem;
+    border: 1px solid rgba(168,85,247,.35);
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 1rem;
+    transition: all .2s;
+  }
+  .btn-secondary:hover { background: rgba(168,85,247,.1); border-color: var(--mauve-400); }
+
+  /* ── STATS ── */
+  .stats {
+    position: relative; z-index: 1;
+    display: flex; justify-content: center; gap: 0;
+    flex-wrap: wrap;
+    margin: 1rem auto 5rem;
+    max-width: 800px;
+    border: 1px solid rgba(168,85,247,.15);
+    border-radius: 1rem;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    background: rgba(22,13,34,.5);
+    animation: fadeUp .6s ease .4s both;
+  }
+  .stat {
+    flex: 1; min-width: 140px;
+    padding: 1.8rem 1rem;
+    text-align: center;
+    border-right: 1px solid rgba(168,85,247,.12);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--mauve-300);
+    display: block;
+  }
+  .stat-num span { color: var(--accent); }
+  .stat-label {
+    font-size: .75rem;
+    color: var(--text-muted);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    margin-top: .25rem;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative; z-index: 1;
+    padding: 6rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .7rem;
+    color: var(--accent);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: .75rem;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+    line-height: 1.2;
+    margin-bottom: 1rem;
+  }
+  .section-sub {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 620px;
+    margin-bottom: 3rem;
+  }
+
+  /* divider */
+  .divider {
+    border: none;
+    border-top: 1px solid rgba(168,85,247,.1);
+    margin: 0;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .pipe-card {
+    background: rgba(22,13,34,.6);
+    border: 1px solid rgba(168,85,247,.15);
+    border-radius: .9rem;
+    padding: 1.5rem;
+    transition: border-color .3s, transform .3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .pipe-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--mauve-500), transparent);
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  .pipe-card:hover { border-color: rgba(168,85,247,.4); transform: translateY(-4px); }
+  .pipe-card:hover::before { opacity: 1; }
+  .pipe-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .7rem;
+    color: var(--mauve-500);
+    margin-bottom: .5rem;
+    letter-spacing: .08em;
+  }
+  .pipe-card h3 { font-family: 'Syne', sans-serif; font-weight: 600; font-size: 1rem; margin-bottom: .4rem; color: var(--mauve-200); }
+  .pipe-card p { font-size: .85rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── COMPARISON TABLE ── */
+  .table-wrap {
+    overflow-x: auto;
+    border-radius: 1rem;
+    border: 1px solid rgba(168,85,247,.2);
+    background: rgba(22,13,34,.5);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: .88rem; }
+  thead tr { background: rgba(92,45,145,.25); }
+  thead th {
+    padding: 1rem 1.2rem;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: .82rem;
+    letter-spacing: .06em;
+    color: var(--mauve-200);
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(168,85,247,.2);
+  }
+  thead th:first-child { color: var(--text-muted); }
+  tbody tr { border-bottom: 1px solid rgba(168,85,247,.08); transition: background .2s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(124,58,237,.07); }
+  tbody td { padding: .85rem 1.2rem; color: var(--text-muted); vertical-align: middle; }
+  tbody td:first-child { color: var(--white); font-weight: 400; }
+  .check { color: #4ade80; font-size: 1rem; }
+  .cross { color: #f87171; font-size: 1rem; }
+  .partial { color: var(--gold); font-size: 1rem; }
+  .ec-col { color: var(--mauve-300) !important; font-weight: 500 !important; }
+  .highlight-row td:first-child { color: var(--accent) !important; font-weight: 500 !important; }
+
+  /* ── APK EVAL TABLE ── */
+  .apk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.2rem; }
+  .apk-card {
+    border: 1px solid rgba(168,85,247,.18);
+    border-radius: .9rem;
+    padding: 1.5rem;
+    background: rgba(22,13,34,.55);
+    position: relative;
+    overflow: hidden;
+  }
+  .apk-card::after {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  }
+  .apk-card.faible::after { background: #4ade80; }
+  .apk-card.moyen::after { background: var(--gold); }
+  .apk-card.eleve::after { background: #fb923c; }
+  .apk-card.critique::after { background: #f87171; }
+  .apk-name { font-family: 'JetBrains Mono', monospace; font-size: .85rem; color: var(--mauve-300); margin-bottom: .3rem; }
+  .apk-pkg { font-size: .75rem; color: var(--text-muted); margin-bottom: 1rem; }
+  .apk-risk {
+    display: inline-block;
+    padding: .2rem .75rem;
+    border-radius: 2rem;
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .risk-faible { background: rgba(74,222,128,.15); color: #4ade80; }
+  .risk-moyen { background: rgba(251,191,36,.15); color: var(--gold); }
+  .risk-eleve { background: rgba(251,146,60,.15); color: #fb923c; }
+  .risk-critique { background: rgba(248,113,113,.15); color: #f87171; }
+  .apk-stats { display: flex; flex-direction: column; gap: .4rem; }
+  .apk-stat { display: flex; justify-content: space-between; font-size: .8rem; }
+  .apk-stat-label { color: var(--text-muted); }
+  .apk-stat-val { color: var(--white); font-family: 'JetBrains Mono', monospace; font-size: .78rem; }
+
+  /* ── FEATURES ── */
+  .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+  .feat-card {
+    background: rgba(22,13,34,.55);
+    border: 1px solid rgba(168,85,247,.15);
+    border-radius: .9rem;
+    padding: 1.8rem;
+    transition: all .3s;
+  }
+  .feat-card:hover { border-color: rgba(232,121,249,.35); background: rgba(35,15,56,.6); }
+  .feat-icon {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, rgba(124,58,237,.3), rgba(232,121,249,.2));
+    border-radius: .6rem;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+    margin-bottom: 1.1rem;
+    border: 1px solid rgba(168,85,247,.2);
+  }
+  .feat-card h3 { font-family: 'Syne', sans-serif; font-weight: 600; margin-bottom: .5rem; font-size: 1rem; }
+  .feat-card p { font-size: .85rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* ── TEAM ── */
+  .team-section { text-align: center; }
+  .team-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; margin-top: 2rem; }
+  .team-card {
+    background: rgba(22,13,34,.55);
+    border: 1px solid rgba(168,85,247,.15);
+    border-radius: .9rem;
+    padding: 1.5rem 1.8rem;
+    min-width: 180px;
+    text-align: center;
+    transition: all .3s;
+  }
+  .team-card:hover { border-color: rgba(232,121,249,.35); transform: translateY(-3px); }
+  .team-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--mauve-700), var(--mauve-500));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--mauve-200);
+    margin: 0 auto 1rem;
+    border: 2px solid rgba(168,85,247,.3);
+  }
+  .team-name { font-family: 'Syne', sans-serif; font-weight: 600; font-size: .95rem; margin-bottom: .25rem; }
+  .team-role { font-size: .75rem; color: var(--text-muted); }
+  .supervisor-badge {
+    font-size: .65rem;
+    background: rgba(124,58,237,.2);
+    border: 1px solid rgba(168,85,247,.25);
+    border-radius: 2rem;
+    padding: .15rem .6rem;
+    color: var(--mauve-300);
+    margin-top: .4rem;
+    display: inline-block;
+  }
+
+  /* ── TECH STACK ── */
+  .tech-pills { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.5rem; }
+  .tech-pill {
+    background: rgba(92,45,145,.2);
+    border: 1px solid rgba(168,85,247,.2);
+    border-radius: 2rem;
+    padding: .35rem 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .75rem;
+    color: var(--mauve-300);
+    transition: all .2s;
+  }
+  .tech-pill:hover { background: rgba(124,58,237,.3); border-color: rgba(168,85,247,.4); }
+
+  /* ── QUALITY METRICS ── */
+  .quality-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; }
+  .quality-card {
+    background: rgba(22,13,34,.55);
+    border: 1px solid rgba(168,85,247,.15);
+    border-radius: .8rem;
+    padding: 1.4rem;
+    text-align: center;
+  }
+  .quality-val {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.8rem;
+    color: var(--mauve-300);
+  }
+  .quality-label { font-size: .75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: .06em; margin-top: .3rem; }
+
+  /* ── CTA SECTION ── */
+  .cta-section {
+    text-align: center;
+    background: radial-gradient(ellipse at 50% 50%, rgba(92,45,145,.3) 0%, transparent 70%);
+    border: 1px solid rgba(168,85,247,.15);
+    border-radius: 1.5rem;
+    padding: 5rem 2rem;
+    margin: 2rem auto 6rem;
+    max-width: 900px;
+    position: relative; z-index: 1;
+  }
+  .cta-section h2 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 4vw, 3rem); margin-bottom: 1rem; }
+  .cta-section p { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 2.5rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid rgba(168,85,247,.1);
+    padding: 2rem 3rem;
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 700; font-size: .95rem; color: var(--mauve-300); }
+  .footer-logo span { color: var(--accent); }
+  .footer-info { font-size: .8rem; color: var(--text-muted); }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { color: var(--text-muted); text-decoration: none; font-size: .82rem; transition: color .2s; }
+  .footer-links a:hover { color: var(--mauve-300); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--mauve-950); }
+  ::-webkit-scrollbar-thumb { background: var(--mauve-700); border-radius: 3px; }
+
+  @media (max-width: 768px) {
+    nav ul { display: none; }
+    nav { padding: 1rem 1.5rem; }
+    section { padding: 4rem 1.5rem; }
+    .stats { flex-direction: column; }
+    .stat { border-right: none; border-bottom: 1px solid rgba(168,85,247,.12); }
+    footer { flex-direction: column; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+<div class="blob blob-3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Evidence<span>Collector</span></div>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#pipeline">How It Works</a></li>
+    <li><a href="#comparison">Comparison</a></li>
+    <li><a href="#evaluation">Evaluation</a></li>
+    <li><a href="#team">Team</a></li>
+    <li><a href="https://github.com/Huuudaa/Evidence_Collector" target="_blank" class="nav-cta">GitHub ↗</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">v1.0.0 · MASVS v2.1.0 · MASTG v1.7.0 · MIT License</div>
+    <h1>
+      Automated Android APK<br>
+      <span class="line2">Security Auditing & AI Reporting</span>
+    </h1>
+    <p class="hero-sub">
+      Evidence Collector &amp; Compliance Pack is an open-source, browser-accessible platform that automates static analysis of Android APKs and generates auditor-ready evidence packages — mapped to OWASP MASVS standards with AI-assisted executive summaries.
+    </p>
+    <div class="hero-btns">
+      <a href="https://github.com/Huuudaa/Evidence_Collector" target="_blank" class="btn-primary">
+        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.25.8-.55v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.65-1.3-1.65-1.05-.7.1-.7.1-.7 1.15.1 1.75 1.2 1.75 1.2 1.05 1.75 2.75 1.25 3.4.95.1-.75.4-1.25.75-1.55-2.55-.3-5.25-1.3-5.25-5.75 0-1.25.45-2.3 1.2-3.1-.12-.3-.52-1.47.11-3.07 0 0 .97-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.17-1.2 3.17-1.2.63 1.6.23 2.77.11 3.07.75.8 1.2 1.85 1.2 3.1 0 4.47-2.7 5.45-5.27 5.73.42.37.78 1.08.78 2.18v3.23c0 .3.2.65.8.54C20.2 21.4 23.5 17.1 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+        View on GitHub
+      </a>
+      <a href="https://youtu.be/w3HuxrMwQ2c" target="_blank" class="btn-secondary">
+        ▶ Watch Demo
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats reveal">
+  <div class="stat">
+    <span class="stat-num">79<span>%</span></span>
+    <div class="stat-label">MobSF Feature Coverage</div>
+  </div>
+  <div class="stat">
+    <span class="stat-num">12</span>
+    <div class="stat-label">MASVS Requirements</div>
+  </div>
+  <div class="stat">
+    <span class="stat-num">36</span>
+    <div class="stat-label">SBOM Fingerprints</div>
+  </div>
+  <div class="stat">
+    <span class="stat-num">8</span>
+    <div class="stat-label">Analysis Modules</div>
+  </div>
+  <div class="stat">
+    <span class="stat-num">100<span>%</span></span>
+    <div class="stat-label">Manifest Check Accuracy</div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="reveal">
+    <div class="section-tag">// What it does</div>
+    <h2 class="section-title">Everything you need for a compliant APK audit</h2>
+    <p class="section-sub">Eight modular analysis engines work in sequence to cover static analysis, dependency auditing, secret detection, and AI-assisted risk reporting — all from a single APK upload.</p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat-card reveal">
+      <div class="feat-icon">🔐</div>
+      <h3>MASVS-Mapped Permissions</h3>
+      <p>25 dangerous permissions classified by risk level (HIGH/MEDIUM) and mapped to their exact MASVS v2.1.0 requirement and chapter.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">📦</div>
+      <h3>Software Bill of Materials</h3>
+      <p>Identifies 36 known Java/Kotlin library fingerprints and native .so files, annotated with vendor, category, and production-risk flag.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">🔍</div>
+      <h3>DEX String Analysis</h3>
+      <p>Scans bytecode for API keys, JWT tokens, AWS credentials, Firebase URLs using 9 regex patterns. Secrets anonymized — never stored in plaintext.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">🤖</div>
+      <h3>AI Executive Summary</h3>
+      <p>Google Gemini Flash generates a plain-language risk report with executive summary, key findings, and recommendations — the only open-source tool with this feature.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">📋</div>
+      <h3>Rule-Based Compliance</h3>
+      <p>All 12 MASVS verdicts are entirely rule-based and traceable to specific evidence sources. The LLM layer never influences compliance scoring.</p>
+    </div>
+    <div class="feat-card reveal">
+      <div class="feat-icon">🚀</div>
+      <h3>Zero-Config Deployment</h3>
+      <p>Runs locally via <code style="color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:.8em">python app.py</code> or one-command Docker. No persistent server, no cloud dependency.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- PIPELINE -->
+<section id="pipeline">
+  <div class="reveal">
+    <div class="section-tag">// Analysis pipeline</div>
+    <h2 class="section-title">8-step automated audit workflow</h2>
+    <p class="section-sub">From APK upload to auditor-ready HTML/JSON report in under 10 seconds.</p>
+  </div>
+  <div class="pipeline">
+    <div class="pipe-card reveal">
+      <div class="pipe-num">M1 · apk_hasher</div>
+      <h3>Hash Computation</h3>
+      <p>SHA-256 &amp; MD5 in streaming mode. Primary reproducibility identifier per MASVS-RESILIENCE-1.</p>
+    </div>
+    <div class="pipe-card reveal">
+      <div class="pipe-num">M2 · manifest_parser</div>
+      <h3>Manifest Extraction</h3>
+      <p>Parses binary AndroidManifest via pyaxmlparser: debuggable, allowBackup, SDK levels, cleartext flags.</p>
+    </div>
+    <div class="pipe-card reveal">
+      <div class="pipe-num">M3 · permission_analyzer</div>
+      <h3>Permission Classification</h3>
+      <p>Risk score s = min(100, 15·n<sub>HIGH</sub> + 7·n<sub>MED</sub>). Calibrated on 20 labeled APKs.</p>
+    </div>
+    <div class="pipe-card reveal">
+      <div class="pipe-num">M4 · sbom_generator</div>
+      <h3>SBOM Generation</h3>
+      <p>36 library fingerprints + native .so detection. Annotated with vendor, category, and risk flag.</p>
+    </div>
+    <div class="pipe-card reveal">
+      <div class="pipe-num">M5 · strings_analyzer</div>
+      <h3>DEX String Analysis</h3>
+      <p>9 compiled regex patterns. 8 behavioral indicators (SSL pinning, obfuscation, root detection…)</p>
+    </div>
+    <div class="pipe-card reveal">
+      <div class="pipe-num">M6 · masvs_mapper</div>
+      <h3>MASVS Compliance</h3>
+      <p>12 requirements across Chapters 4, 6, 7, 9, 10, 14. Rule-based only — fully traceable.</p>
+    </div>
+    <div class="pipe-card reveal">
+      <div class="pipe-num">M7 · gemini_client</div>
+      <h3>AI Summarization</h3>
+      <p>Gemini Flash at temperature 0.2. JSON Schema validated. Local fallback if API unavailable.</p>
+    </div>
+    <div class="pipe-card reveal">
+      <div class="pipe-num">M8 · report_generator</div>
+      <h3>Report Export</h3>
+      <p>UUID-addressed HTML (audit-ready) + JSON (programmatic). Reproducible across environments.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- COMPARISON TABLE -->
+<section id="comparison">
+  <div class="reveal">
+    <div class="section-tag">// Comparative evaluation</div>
+    <h2 class="section-title">Evidence Collector vs MobSF &amp; others</h2>
+    <p class="section-sub">Side-by-side evaluation on 4 real-world APKs (22 May 2026, Windows 11, Python 3.13). Based on data published in our research article.</p>
+  </div>
+  <div class="table-wrap reveal">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:40%">Feature</th>
+          <th style="width:30%;text-align:center">Evidence Collector v1.0</th>
+          <th style="width:30%;text-align:center">MobSF v4.5</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>APK Hash (SHA-256 / MD5)</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Manifest Extraction</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Permission Classification</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr class="highlight-row">
+          <td>MASVS Mapping per Permission</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="cross">✗</span></td>
+        </tr>
+        <tr class="highlight-row">
+          <td>SBOM — 36 Library Fingerprints</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="partial">△</span> partial</td>
+        </tr>
+        <tr>
+          <td>DEX String / Secret Detection</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Behavioral Indicators (DEX)</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr class="highlight-row">
+          <td>MASVS/MASTG Compliance Matrix (12 rules, rule-based)</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="cross">✗</span></td>
+        </tr>
+        <tr class="highlight-row">
+          <td>LLM Executive Summary (Gemini Flash)</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>HTML + JSON Report Export</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Web Interface</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="partial">△</span> requires Docker</td>
+        </tr>
+        <tr class="highlight-row">
+          <td>Zero-Config (no Docker required)</td>
+          <td class="ec-col" style="text-align:center"><span class="check">✓</span></td>
+          <td style="text-align:center"><span class="cross">✗</span></td>
+        </tr>
+        <tr>
+          <td>Source Decompilation (JADX / smali)</td>
+          <td class="ec-col" style="text-align:center"><span class="cross">✗</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Certificate Chain Analysis</td>
+          <td class="ec-col" style="text-align:center"><span class="cross">✗</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Runtime Traffic Interception (Frida)</td>
+          <td class="ec-col" style="text-align:center"><span class="cross">✗</span></td>
+          <td style="text-align:center"><span class="check">✓</span></td>
+        </tr>
+        <tr>
+          <td>Static Feature Coverage</td>
+          <td class="ec-col" style="text-align:center;color:var(--gold)!important;font-weight:600!important">79% (11/14 categories)</td>
+          <td style="text-align:center;color:var(--text-muted)">Baseline</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:1rem;font-size:.8rem;color:var(--text-muted)">
+    <span style="color:#4ade80">✓</span> = fully supported &nbsp;·&nbsp;
+    <span style="color:var(--gold)">△</span> = partial &nbsp;·&nbsp;
+    <span style="color:#f87171">✗</span> = not supported &nbsp;·&nbsp;
+    Highlighted rows = Evidence Collector's unique differentiators over MobSF
+  </p>
+</section>
+
+<hr class="divider">
+
+<!-- EVALUATION -->
+<section id="evaluation">
+  <div class="reveal">
+    <div class="section-tag">// Real-world evaluation</div>
+    <h2 class="section-title">Tested on 4 real Android APKs</h2>
+    <p class="section-sub">Evaluated on 22 May 2026 across a full spectrum of risk profiles, from minimal utility apps to a full-featured package installer.</p>
+  </div>
+  <div class="apk-grid">
+    <div class="apk-card faible reveal">
+      <div class="apk-name">ezmobile.apk</div>
+      <div class="apk-pkg">com.pwnsec.ezmobile · 4.56 MB</div>
+      <div><span class="apk-risk risk-faible">FAIBLE</span></div>
+      <div class="apk-stats">
+        <div class="apk-stat"><span class="apk-stat-label">MASVS Score</span><span class="apk-stat-val">11/12 (92%)</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Permissions</span><span class="apk-stat-val">1 total · 0 dangerous</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Libraries</span><span class="apk-stat-val">3 (Kotlin, Coroutines, Nav)</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Analysis Time</span><span class="apk-stat-val">3.5 s</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">SHA-256 prefix</span><span class="apk-stat-val">d8a612c4c4d9efa0</span></div>
+      </div>
+    </div>
+    <div class="apk-card moyen reveal">
+      <div class="apk-name">FireStorm.apk</div>
+      <div class="apk-pkg">com.pwnsec.firestorm · 4.26 MB</div>
+      <div><span class="apk-risk risk-moyen">MOYEN</span></div>
+      <div class="apk-stats">
+        <div class="apk-stat"><span class="apk-stat-label">MASVS Score</span><span class="apk-stat-val">10/12 (83%)</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Permissions</span><span class="apk-stat-val">4 total · 0 dangerous</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Libraries</span><span class="apk-stat-val">4 (Kotlin, Firebase, …)</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">MASVS Failures</span><span class="apk-stat-val">CRYPTO-2, NETWORK-2</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Analysis Time</span><span class="apk-stat-val">3.8 s</span></div>
+      </div>
+    </div>
+    <div class="apk-card eleve reveal">
+      <div class="apk-name">FireInTheHole.apk</div>
+      <div class="apk-pkg">com.PwnSec.fireinthehole · 5.68 MB</div>
+      <div><span class="apk-risk risk-eleve">ÉLEVÉ</span></div>
+      <div class="apk-stats">
+        <div class="apk-stat"><span class="apk-stat-label">MASVS Score</span><span class="apk-stat-val">8/12 (67%)</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Permissions</span><span class="apk-stat-val">6 total · 2 dangerous</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Dangerous</span><span class="apk-stat-val">WRITE/READ_EXT_STORAGE</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Analysis Time</span><span class="apk-stat-val">4.3 s</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">SHA-256 prefix</span><span class="apk-stat-val">7ef29fe545103a38</span></div>
+      </div>
+    </div>
+    <div class="apk-card critique reveal">
+      <div class="apk-name">F-Droid.apk</div>
+      <div class="apk-pkg">org.fdroid.fdroid · 11.85 MB</div>
+      <div><span class="apk-risk risk-critique">CRITIQUE</span></div>
+      <div class="apk-stats">
+        <div class="apk-stat"><span class="apk-stat-label">MASVS Score</span><span class="apk-stat-val">8/12 (67%)</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Permissions</span><span class="apk-stat-val">28 total · 5 dangerous</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Risk Score</span><span class="apk-stat-val">75/100</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Libraries</span><span class="apk-stat-val">5 identified</span></div>
+        <div class="apk-stat"><span class="apk-stat-label">Analysis Time</span><span class="apk-stat-val">7.1 s</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- QUALITY -->
+<section>
+  <div class="reveal">
+    <div class="section-tag">// Quality assurance</div>
+    <h2 class="section-title">Production-grade code quality</h2>
+    <p class="section-sub">Assessed with SonarQube Community v10.4. All 20 APK analyses completed without errors.</p>
+  </div>
+  <div class="quality-grid reveal">
+    <div class="quality-card">
+      <div class="quality-val" style="color:#4ade80">A</div>
+      <div class="quality-label">Security Rating</div>
+    </div>
+    <div class="quality-card">
+      <div class="quality-val" style="color:#4ade80">A</div>
+      <div class="quality-label">Reliability Rating</div>
+    </div>
+    <div class="quality-card">
+      <div class="quality-val">78%</div>
+      <div class="quality-label">Test Coverage (pytest)</div>
+    </div>
+    <div class="quality-card">
+      <div class="quality-val" style="color:#4ade80">0</div>
+      <div class="quality-label">Security Hotspots</div>
+    </div>
+    <div class="quality-card">
+      <div class="quality-val">100%</div>
+      <div class="quality-label">Manifest Check Accuracy</div>
+    </div>
+    <div class="quality-card">
+      <div class="quality-val">90%</div>
+      <div class="quality-label">String Check Accuracy</div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TECH STACK -->
+<section>
+  <div class="reveal">
+    <div class="section-tag">// Tech stack</div>
+    <h2 class="section-title">Built with</h2>
+  </div>
+  <div class="tech-pills reveal">
+    <span class="tech-pill">Python 3.10</span>
+    <span class="tech-pill">Flask 3.0.3</span>
+    <span class="tech-pill">HTML5 / CSS3</span>
+    <span class="tech-pill">JavaScript ES2020</span>
+    <span class="tech-pill">pyaxmlparser 0.3.24</span>
+    <span class="tech-pill">Google Gemini Flash</span>
+    <span class="tech-pill">Docker Compose</span>
+    <span class="tech-pill">SonarQube</span>
+    <span class="tech-pill">GitHub Actions CI</span>
+    <span class="tech-pill">pytest</span>
+    <span class="tech-pill">OWASP MASVS v2.1.0</span>
+    <span class="tech-pill">MASTG v1.7.0</span>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- TEAM -->
+<section id="team" class="team-section">
+  <div class="reveal">
+    <div class="section-tag">// The team</div>
+    <h2 class="section-title">Team 3 — ENSA Marrakech</h2>
+    <p class="section-sub" style="margin:0 auto 0">Génie Cyber Défense · Systèmes de Télécommunication</p>
+  </div>
+  <div class="team-grid">
+    <div class="team-card reveal">
+      <div class="team-avatar">AE</div>
+      <div class="team-name">Ezbiri Amira</div>
+      <div class="team-role">Developer</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar" style="background:linear-gradient(135deg,var(--accent),var(--mauve-700))">HS</div>
+      <div class="team-name">SAS Houda</div>
+      <div class="team-role">Developer</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar">SB</div>
+      <div class="team-name">Bachir Soukaina</div>
+      <div class="team-role">Developer</div>
+    </div>
+    <div class="team-card reveal">
+      <div class="team-avatar">OE</div>
+      <div class="team-name">El Yamani Omayma</div>
+      <div class="team-role">Developer</div>
+    </div>
+  </div>
+  <div style="margin-top:2.5rem;text-align:center" class="reveal">
+    <p style="color:var(--text-muted);font-size:.85rem;margin-bottom:1rem">Supervised by</p>
+    <div style="display:inline-flex;flex-wrap:wrap;gap:1rem;justify-content:center">
+      <div class="team-card" style="min-width:220px">
+        <div class="team-avatar" style="background:linear-gradient(135deg,var(--mauve-800),var(--mauve-600));border-color:rgba(232,121,249,.4)">ML</div>
+        <div class="team-name">Prof. Lachgar Mohamed</div>
+        <div class="team-role">Cadi Ayyad University · L2IS Lab</div>
+        <span class="supervisor-badge">Supervisor</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- CTA -->
+<div class="cta-section reveal">
+  <h2>Ready to audit your APK?</h2>
+  <p>Clone the repo, install dependencies, and get your first MASVS compliance report in under 5 minutes.</p>
+  <div style="background:rgba(14,7,20,.7);border:1px solid rgba(168,85,247,.2);border-radius:.7rem;padding:1.2rem 1.5rem;text-align:left;max-width:520px;margin:0 auto 2rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--mauve-300);line-height:1.8">
+    <span style="color:var(--text-muted)">$</span> git clone https://github.com/Huuudaa/Evidence_Collector.git<br>
+    <span style="color:var(--text-muted)">$</span> pip install -r requirements.txt<br>
+    <span style="color:var(--text-muted)">$</span> python app.py<br>
+    <span style="color:#4ade80">→</span> Open http://localhost:5000
+  </div>
+  <a href="https://github.com/Huuudaa/Evidence_Collector" target="_blank" class="btn-primary" style="font-size:1.05rem;padding:1rem 2.5rem">
+    <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M12 .5C5.65.5.5 5.65.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.25.8-.55v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.65-1.3-1.65-1.05-.7.1-.7.1-.7 1.15.1 1.75 1.2 1.75 1.2 1.05 1.75 2.75 1.25 3.4.95.1-.75.4-1.25.75-1.55-2.55-.3-5.25-1.3-5.25-5.75 0-1.25.45-2.3 1.2-3.1-.12-.3-.52-1.47.11-3.07 0 0 .97-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.17-1.2 3.17-1.2.63 1.6.23 2.77.11 3.07.75.8 1.2 1.85 1.2 3.1 0 4.47-2.7 5.45-5.27 5.73.42.37.78 1.08.78 2.18v3.23c0 .3.2.65.8.54C20.2 21.4 23.5 17.1 23.5 12 23.5 5.65 18.35.5 12 .5z"/></svg>
+    View on GitHub
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">Evidence<span>Collector</span> & Compliance Pack</div>
+    <div class="footer-info" style="margin-top:.4rem">ENSA Marrakech · Génie Cyber Défense · MIT License · v1.0.0</div>
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/Huuudaa/Evidence_Collector" target="_blank">GitHub</a>
+    <a href="https://youtu.be/w3HuxrMwQ2c" target="_blank">Demo</a>
+    <a href="https://mas.owasp.org/" target="_blank">OWASP MASVS</a>
+    <a href="mailto:m.lachgar@uca.ac.ma">Contact</a>
+  </div>
+</footer>
+
+<script>
+  // Intersection observer for reveal animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) {
+        setTimeout(() => e.target.classList.add('visible'), i * 60);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

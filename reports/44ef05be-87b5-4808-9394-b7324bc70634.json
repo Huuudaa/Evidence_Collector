@@ -1,0 +1,694 @@
+{
+  "filename": "F-Droid.apk",
+  "analyzed_at": "22/05/2026 à 18:48:39",
+  "error": null,
+  "hashes": {
+    "sha256": "985f5181d48bb6bafd54083a048b391271e0ab28385881cc41294fb01a222762",
+    "md5": "ec6a9a8560924bb833942a7c3256847a",
+    "size_bytes": 12426276,
+    "size_kb": 12135.04,
+    "size_mb": 11.851
+  },
+  "manifest": {
+    "package_name": "org.fdroid.fdroid",
+    "version_name": "1.23.2",
+    "version_code": "1023052",
+    "min_sdk": "23",
+    "target_sdk": "30",
+    "activities": [
+      "org.fdroid.fdroid.nearby.SwapWorkflowActivity",
+      "org.fdroid.fdroid.panic.PanicPreferencesActivity",
+      "org.fdroid.fdroid.panic.SelectInstalledAppsActivity",
+      "org.fdroid.fdroid.panic.PanicResponderActivity",
+      "org.fdroid.fdroid.panic.ExitActivity",
+      "org.fdroid.fdroid.panic.CalculatorActivity",
+      "org.fdroid.fdroid.privileged.views.InstallConfirmActivity",
+      "org.fdroid.fdroid.privileged.views.UninstallDialogActivity",
+      "org.fdroid.fdroid.views.repos.ManageReposActivity",
+      "org.fdroid.fdroid.views.repos.AddRepoActivity",
+      "org.fdroid.fdroid.views.IpfsGatewaySettingsActivity",
+      "org.fdroid.fdroid.views.IpfsGatewayAddActivity",
+      "com.journeyapps.barcodescanner.CaptureActivity",
+      "org.fdroid.fdroid.views.repos.RepoDetailsActivity",
+      "org.fdroid.fdroid.views.AppDetailsActivity",
+      "org.fdroid.fdroid.views.ScreenShotsActivity",
+      "org.fdroid.fdroid.data.ObbUrlActivity",
+      "org.fdroid.fdroid.installer.DefaultInstallerActivity",
+      "org.fdroid.fdroid.installer.ErrorDialogActivity",
+      "org.fdroid.fdroid.views.main.MainActivity",
+      "org.fdroid.fdroid.views.apps.AppListActivity",
+      "org.fdroid.fdroid.views.installed.InstalledAppsActivity",
+      "org.fdroid.fdroid.views.InstallHistoryActivity",
+      "org.fdroid.fdroid.installer.FileInstallerActivity",
+      "org.acra.dialog.CrashReportDialog"
+    ],
+    "services": [
+      "org.fdroid.fdroid.nearby.SwapService",
+      "org.fdroid.fdroid.nearby.LocalRepoService",
+      "org.fdroid.fdroid.nearby.TreeUriScannerIntentService",
+      "org.fdroid.fdroid.nearby.SDCardScannerService",
+      "org.fdroid.fdroid.net.DownloaderService",
+      "org.fdroid.fdroid.installer.InstallerService",
+      "androidx.work.impl.foreground.SystemForegroundService",
+      "org.fdroid.fdroid.DeleteCacheService",
+      "org.fdroid.fdroid.net.ConnectivityMonitorService",
+      "org.fdroid.fdroid.installer.InstallHistoryService",
+      "org.fdroid.fdroid.installer.ObfInstallerService",
+      "androidx.work.impl.background.systemalarm.SystemAlarmService",
+      "androidx.work.impl.background.systemjob.SystemJobService",
+      "androidx.room.MultiInstanceInvalidationService",
+      "org.acra.sender.LegacySenderService",
+      "org.acra.sender.JobSenderService"
+    ],
+    "receivers": [
+      "org.fdroid.fdroid.nearby.UsbDeviceAttachedReceiver",
+      "org.fdroid.fdroid.nearby.UsbDeviceDetachedReceiver",
+      "org.fdroid.fdroid.nearby.UsbDeviceMediaMountedReceiver",
+      "org.fdroid.fdroid.receiver.StartupReceiver",
+      "org.fdroid.fdroid.NotificationBroadcastReceiver",
+      "org.fdroid.fdroid.receiver.RepoUpdateReceiver",
+      "org.fdroid.fdroid.receiver.UnarchivePackageReceiver",
+      "androidx.work.impl.utils.ForceStopRunnable$BroadcastReceiver",
+      "androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryChargingProxy",
+      "androidx.work.impl.background.systemalarm.ConstraintProxy$BatteryNotLowProxy",
+      "androidx.work.impl.background.systemalarm.ConstraintProxy$StorageNotLowProxy",
+      "androidx.work.impl.background.systemalarm.ConstraintProxy$NetworkStateProxy",
+      "androidx.work.impl.background.systemalarm.RescheduleReceiver",
+      "androidx.work.impl.background.systemalarm.ConstraintProxyUpdateReceiver",
+      "androidx.work.impl.diagnostics.DiagnosticsReceiver",
+      "androidx.profileinstaller.ProfileInstallReceiver"
+    ],
+    "providers": [
+      "org.fdroid.fdroid.installer.ApkFileProvider",
+      "androidx.core.content.FileProvider",
+      "org.fdroid.fdroid.nearby.PublicSourceDirProvider",
+      "org.acra.attachment.AcraContentProvider"
+    ],
+    "exported_activities": [],
+    "debuggable": false,
+    "allow_backup": false,
+    "uses_cleartext": false,
+    "has_network_security_config": false
+  },
+  "permissions": {
+    "total": 28,
+    "dangerous": [
+      {
+        "name": "WRITE_EXTERNAL_STORAGE",
+        "full": "android.permission.WRITE_EXTERNAL_STORAGE",
+        "risk": "HIGH",
+        "masvs": "MASVS-STORAGE-2",
+        "chapter": 4
+      },
+      {
+        "name": "CAMERA",
+        "full": "android.permission.CAMERA",
+        "risk": "HIGH",
+        "masvs": "MASVS-STORAGE-1",
+        "chapter": 4
+      },
+      {
+        "name": "MANAGE_EXTERNAL_STORAGE",
+        "full": "android.permission.MANAGE_EXTERNAL_STORAGE",
+        "risk": "HIGH",
+        "masvs": "MASVS-STORAGE-2",
+        "chapter": 4
+      },
+      {
+        "name": "REQUEST_INSTALL_PACKAGES",
+        "full": "android.permission.REQUEST_INSTALL_PACKAGES",
+        "risk": "HIGH",
+        "masvs": "MASVS-CODE-1",
+        "chapter": 10
+      },
+      {
+        "name": "READ_EXTERNAL_STORAGE",
+        "full": "android.permission.READ_EXTERNAL_STORAGE",
+        "risk": "HIGH",
+        "masvs": "MASVS-STORAGE-2",
+        "chapter": 4
+      }
+    ],
+    "normal": [
+      {
+        "name": "POST_NOTIFICATIONS",
+        "full": "android.permission.POST_NOTIFICATIONS",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "WAKE_LOCK",
+        "full": "android.permission.WAKE_LOCK",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "RECEIVE_BOOT_COMPLETED",
+        "full": "android.permission.RECEIVE_BOOT_COMPLETED",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "ACCESS_WIFI_STATE",
+        "full": "android.permission.ACCESS_WIFI_STATE",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "CHANGE_WIFI_STATE",
+        "full": "android.permission.CHANGE_WIFI_STATE",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "BLUETOOTH",
+        "full": "android.permission.BLUETOOTH",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "INTERNET",
+        "full": "android.permission.INTERNET",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "ACCESS_NETWORK_STATE",
+        "full": "android.permission.ACCESS_NETWORK_STATE",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "FOREGROUND_SERVICE",
+        "full": "android.permission.FOREGROUND_SERVICE",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "BLUETOOTH_ADMIN",
+        "full": "android.permission.BLUETOOTH_ADMIN",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "CHANGE_NETWORK_STATE",
+        "full": "android.permission.CHANGE_NETWORK_STATE",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "NFC",
+        "full": "android.permission.NFC",
+        "risk": "NORMAL"
+      }
+    ],
+    "unknown": [
+      {
+        "name": "QUERY_ALL_PACKAGES",
+        "full": "android.permission.QUERY_ALL_PACKAGES",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "UPDATE_PACKAGES_WITHOUT_USER_ACTION",
+        "full": "android.permission.UPDATE_PACKAGES_WITHOUT_USER_ACTION",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "BLUETOOTH_CONNECT",
+        "full": "android.permission.BLUETOOTH_CONNECT",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "ENFORCE_UPDATE_OWNERSHIP",
+        "full": "android.permission.ENFORCE_UPDATE_OWNERSHIP",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "UPDATE_REPOS",
+        "full": "org.fdroid.fdroid.permission.UPDATE_REPOS",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "USB_PERMISSION",
+        "full": "android.permission.USB_PERMISSION",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "REQUEST_DELETE_PACKAGES",
+        "full": "android.permission.REQUEST_DELETE_PACKAGES",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "BLUETOOTH_SCAN",
+        "full": "android.permission.BLUETOOTH_SCAN",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "WRITE_SETTINGS",
+        "full": "android.permission.WRITE_SETTINGS",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "full": "org.fdroid.fdroid.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "CHANGE_WIFI_MULTICAST_STATE",
+        "full": "android.permission.CHANGE_WIFI_MULTICAST_STATE",
+        "risk": "UNKNOWN"
+      }
+    ],
+    "high_count": 5,
+    "medium_count": 0,
+    "risk_score": 75
+  },
+  "sbom": {
+    "libraries": [
+      {
+        "name": "Kotlin",
+        "vendor": "JetBrains",
+        "type": "Language",
+        "risky": false
+      },
+      {
+        "name": "Coroutines",
+        "vendor": "JetBrains",
+        "type": "Async",
+        "risky": false
+      },
+      {
+        "name": "OkHttp",
+        "vendor": "Square",
+        "type": "Network",
+        "risky": false
+      },
+      {
+        "name": "BouncyCastle",
+        "vendor": "Legion",
+        "type": "Crypto",
+        "risky": false
+      },
+      {
+        "name": "Navigation",
+        "vendor": "AndroidX",
+        "type": "Navigation",
+        "risky": false
+      }
+    ],
+    "total": 5,
+    "native_libs": [
+      {
+        "path": "lib/arm64-v8a/libandroidx.graphics.path.so",
+        "size_kb": 9.9
+      },
+      {
+        "path": "lib/armeabi-v7a/libandroidx.graphics.path.so",
+        "size_kb": 7.1
+      },
+      {
+        "path": "lib/x86/libandroidx.graphics.path.so",
+        "size_kb": 9.1
+      },
+      {
+        "path": "lib/x86_64/libandroidx.graphics.path.so",
+        "size_kb": 10.5
+      }
+    ],
+    "native_count": 4,
+    "dex_files": [
+      "classes.dex",
+      "classes2.dex"
+    ],
+    "dex_count": 2,
+    "risky_libs": [],
+    "total_entries": 1119
+  },
+  "strings": {
+    "findings": {
+      "emails": [
+        ".Y@g.TPq",
+        "b.RPl.Y@l.TPk",
+        ".Y@c.TPb",
+        ".Y@e.RPm",
+        "p@2.CeYr",
+        "d.RPr.Y@r.RPs",
+        "s.Y@g.RPc",
+        ".Y@m.SPo",
+        ".Z@o.RPn",
+        "p.RPh.Y@h.RPe",
+        ".Y@n.RUi.YEi",
+        ".Y@s.RPg",
+        "c.T@q.TAp.TBk"
+      ]
+    },
+    "finding_types": [
+      "emails"
+    ],
+    "dynamic_indicators": {
+      "obfuscation": [
+        "r8"
+      ]
+    },
+    "severity": "LOW",
+    "has_ssl_pinning": false,
+    "has_root_check": false,
+    "has_obfuscation": true,
+    "has_crypto": false,
+    "url_count": 0
+  },
+  "masvs": {
+    "results": {
+      "MASVS-STORAGE-1": {
+        "pass": false,
+        "details": "4 permission(s) de stockage sensible"
+      },
+      "MASVS-STORAGE-2": {
+        "pass": true,
+        "details": "Backup désactivé"
+      },
+      "MASVS-CRYPTO-1": {
+        "pass": false,
+        "details": "Aucune primitive crypto détectée"
+      },
+      "MASVS-CRYPTO-2": {
+        "pass": true,
+        "details": "Aucune clé en clair détectée"
+      },
+      "MASVS-AUTH-1": {
+        "pass": true,
+        "details": "Aucun token JWT en clair"
+      },
+      "MASVS-AUTH-2": {
+        "pass": true,
+        "details": "Application non débogable"
+      },
+      "MASVS-NETWORK-1": {
+        "pass": true,
+        "details": "Trafic en clair non autorisé"
+      },
+      "MASVS-NETWORK-2": {
+        "pass": false,
+        "details": "Aucune config réseau sécurisée"
+      },
+      "MASVS-CODE-1": {
+        "pass": true,
+        "details": "Aucune bibliothèque risquée"
+      },
+      "MASVS-CODE-2": {
+        "pass": true,
+        "details": "Aucun code de debug"
+      },
+      "MASVS-RESILIENCE-1": {
+        "pass": true,
+        "details": "Obfuscation détectée (ProGuard/R8)"
+      },
+      "MASVS-RESILIENCE-2": {
+        "pass": false,
+        "details": "Aucune détection root"
+      }
+    },
+    "satisfied": [
+      "MASVS-STORAGE-2",
+      "MASVS-CRYPTO-2",
+      "MASVS-AUTH-1",
+      "MASVS-AUTH-2",
+      "MASVS-NETWORK-1",
+      "MASVS-CODE-1",
+      "MASVS-CODE-2",
+      "MASVS-RESILIENCE-1"
+    ],
+    "missing": [
+      "MASVS-STORAGE-1",
+      "MASVS-CRYPTO-1",
+      "MASVS-NETWORK-2",
+      "MASVS-RESILIENCE-2"
+    ],
+    "score": 8,
+    "total": 12,
+    "percentage": 67
+  },
+  "mobsf_comparison": {
+    "checks": [
+      {
+        "category": "Static",
+        "check": "Manifest Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "APK Hash & Signature",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Permission Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "SBOM / Library Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Hardcoded Secrets",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "URL / IP Extraction",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Obfuscation Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "MASVS / MASTG Mapping",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Certificate Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Static",
+        "check": "Class & Method Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Root/Emulator Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "SSL Pinning Check",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Anti-Debug Indicators",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Dynamic Code Loading",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Runtime Traffic Intercept",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Frida/Xposed Detection",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Report",
+        "check": "HTML Report Generation",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "JSON / ZIP Export",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "AI Summary (LLM)",
+        "mobsf": false,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "MASVS Compliance Score",
+        "mobsf": true,
+        "ours": true
+      }
+    ],
+    "both_have": [
+      {
+        "category": "Static",
+        "check": "Manifest Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "APK Hash & Signature",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Permission Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "SBOM / Library Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Hardcoded Secrets",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "URL / IP Extraction",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Obfuscation Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "MASVS / MASTG Mapping",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Root/Emulator Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "SSL Pinning Check",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Anti-Debug Indicators",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Dynamic Code Loading",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "HTML Report Generation",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "JSON / ZIP Export",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "MASVS Compliance Score",
+        "mobsf": true,
+        "ours": true
+      }
+    ],
+    "only_mobsf": [
+      {
+        "category": "Static",
+        "check": "Certificate Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Static",
+        "check": "Class & Method Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Runtime Traffic Intercept",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Frida/Xposed Detection",
+        "mobsf": true,
+        "ours": false
+      }
+    ],
+    "only_ours": [
+      {
+        "category": "Report",
+        "check": "AI Summary (LLM)",
+        "mobsf": false,
+        "ours": true
+      }
+    ],
+    "coverage_pct": 79
+  },
+  "ai": {
+    "resume_executif": "Analyse IA non disponible — résultats calculés localement.",
+    "niveau_risque": "FAIBLE",
+    "points_forts": [
+      "Obfuscation (ProGuard/R8)",
+      "Debug désactivé en production",
+      "Trafic HTTP en clair interdit"
+    ],
+    "vulnerabilites": [
+      "Permissions dangereuses : WRITE_EXTERNAL_STORAGE, CAMERA, MANAGE_EXTERNAL_STORAGE"
+    ],
+    "recommandations": [
+      "Chiffrer les données sensibles localement",
+      "Utiliser AES-256-GCM pour le chiffrement",
+      "Mettre en place le SSL Pinning",
+      "Implémenter la détection de root/jailbreak"
+    ],
+    "masvs_analyse": "Score MASVS : 8/12 (67%).",
+    "comparaison_mobsf": "Notre outil couvre 79% des vérifications MobSF avec en plus l'analyse IA.",
+    "_gemini_unavailable": true
+  },
+  "overall_risk_score": 91,
+  "overall_risk_level": "CRITIQUE"
+}

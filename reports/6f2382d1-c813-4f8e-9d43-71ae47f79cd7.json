@@ -1,0 +1,552 @@
+{
+  "filename": "FireStorm.apk",
+  "analyzed_at": "22/05/2026 à 18:02:12",
+  "error": null,
+  "hashes": {
+    "sha256": "f9fe512109127afd0b1c2836b8a47f5e15d90f915cbe7a9d89e707ae75141c7c",
+    "md5": "eda0d2e4ed73f9a5a3642393c9bc30a1",
+    "size_bytes": 4468061,
+    "size_kb": 4363.34,
+    "size_mb": 4.261
+  },
+  "manifest": {
+    "package_name": "com.pwnsec.firestorm",
+    "version_name": "1.0",
+    "version_code": "1",
+    "min_sdk": "28",
+    "target_sdk": "34",
+    "activities": [
+      "com.pwnsec.firestorm.MainActivity",
+      "com.google.firebase.auth.internal.GenericIdpActivity",
+      "com.google.firebase.auth.internal.RecaptchaActivity",
+      "androidx.credentials.playservices.HiddenActivity",
+      "com.google.android.gms.auth.api.signin.internal.SignInHubActivity",
+      "com.google.android.gms.common.api.GoogleApiActivity"
+    ],
+    "services": [
+      "com.google.firebase.components.ComponentDiscoveryService",
+      "androidx.credentials.playservices.CredentialProviderMetadataHolder",
+      "com.google.android.gms.auth.api.signin.RevocationBoundService"
+    ],
+    "receivers": [
+      "androidx.profileinstaller.ProfileInstallReceiver"
+    ],
+    "providers": [
+      "com.google.firebase.provider.FirebaseInitProvider",
+      "androidx.startup.InitializationProvider"
+    ],
+    "exported_activities": [],
+    "debuggable": false,
+    "allow_backup": false,
+    "uses_cleartext": false,
+    "has_network_security_config": false
+  },
+  "permissions": {
+    "total": 4,
+    "dangerous": [],
+    "normal": [
+      {
+        "name": "ACCESS_NETWORK_STATE",
+        "full": "android.permission.ACCESS_NETWORK_STATE",
+        "risk": "NORMAL"
+      },
+      {
+        "name": "INTERNET",
+        "full": "android.permission.INTERNET",
+        "risk": "NORMAL"
+      }
+    ],
+    "unknown": [
+      {
+        "name": "DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "full": "com.pwnsec.firestorm.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "risk": "UNKNOWN"
+      },
+      {
+        "name": "READ_GSERVICES",
+        "full": "com.google.android.providers.gsf.permission.READ_GSERVICES",
+        "risk": "UNKNOWN"
+      }
+    ],
+    "high_count": 0,
+    "medium_count": 0,
+    "risk_score": 0
+  },
+  "sbom": {
+    "libraries": [
+      {
+        "name": "Kotlin",
+        "vendor": "JetBrains",
+        "type": "Language",
+        "risky": false
+      },
+      {
+        "name": "Coroutines",
+        "vendor": "JetBrains",
+        "type": "Async",
+        "risky": false
+      },
+      {
+        "name": "Firebase",
+        "vendor": "Google",
+        "type": "Cloud",
+        "risky": false
+      },
+      {
+        "name": "Navigation",
+        "vendor": "AndroidX",
+        "type": "Navigation",
+        "risky": false
+      }
+    ],
+    "total": 4,
+    "native_libs": [
+      {
+        "path": "lib/arm64-v8a/libfirestorm.so",
+        "size_kb": 6.2
+      },
+      {
+        "path": "lib/armeabi-v7a/libfirestorm.so",
+        "size_kb": 4.9
+      },
+      {
+        "path": "lib/x86/libfirestorm.so",
+        "size_kb": 5.3
+      },
+      {
+        "path": "lib/x86_64/libfirestorm.so",
+        "size_kb": 6.5
+      }
+    ],
+    "native_count": 4,
+    "dex_files": [
+      "classes.dex"
+    ],
+    "dex_count": 1,
+    "risky_libs": [],
+    "total_entries": 779
+  },
+  "strings": {
+    "findings": {
+      "urls": [
+        "https://developers.google.com/tink/faq/registration_errors",
+        "https://accounts.google.com/o/oauth2/revoke?token=",
+        "https://www.googleapis.com/auth/games",
+        "http://localhost",
+        "https://www.googleapis.com/auth/games_lite",
+        "https://www.recaptcha.net/recaptcha/api3",
+        "https://developer.android.com/google/play/integrity/reference/com/google/android/play/core/integrity/model/IntegrityErrorCode.html#",
+        "http://schemas.android.com/apk/res-auto",
+        "http://schemas.android.com/apk/res/android",
+        "https://developer.android.com/google/play/integrity/reference/com/google/android/play/core/integrity/model/StandardIntegrityErrorCode.html#"
+      ],
+      "emails": [
+        "p@W.Ce",
+        "android@android.com",
+        "q@3.drn"
+      ],
+      "api_keys": [
+        "onReques...ants",
+        "signInWi...word",
+        "auth_api...word",
+        "INVALID_...MAIN",
+        "getAcces...Name",
+        "ERROR_IN...SION",
+        "RESET_PA...IMIT",
+        "Standard...ider",
+        "REUSABLE...IMED",
+        "8getToke...tage",
+        "forceFai...eady",
+        "google_s...cket",
+        "onWindow...nged",
+        "oauthTok...cret",
+        "recaptch...sion",
+        "REJECTED...TIAL",
+        "INVALID_...MBER",
+        "ERROR_MI...SION",
+        "requestI...oken",
+        "obfuscat...fier",
+        "INVALID_...SION",
+        "ERROR_IN...CODE",
+        "onReques...sult",
+        "Firebase...back",
+        "getWindo...lity",
+        "MISSING_...SION"
+      ]
+    },
+    "finding_types": [
+      "urls",
+      "emails",
+      "api_keys"
+    ],
+    "dynamic_indicators": {
+      "root_detection": [
+        "su"
+      ],
+      "obfuscation": [
+        "r8"
+      ],
+      "reflection": [
+        "getDeclaredMethod",
+        "invoke"
+      ],
+      "crypto_usage": [
+        "AES",
+        "MessageDigest",
+        "KeyStore",
+        "Cipher"
+      ]
+    },
+    "severity": "HIGH",
+    "has_ssl_pinning": false,
+    "has_root_check": true,
+    "has_obfuscation": true,
+    "has_crypto": true,
+    "url_count": 10
+  },
+  "masvs": {
+    "results": {
+      "MASVS-STORAGE-1": {
+        "pass": true,
+        "details": "Aucune permission de stockage sensible"
+      },
+      "MASVS-STORAGE-2": {
+        "pass": true,
+        "details": "Backup désactivé"
+      },
+      "MASVS-CRYPTO-1": {
+        "pass": true,
+        "details": "Usage de primitives cryptographiques détecté"
+      },
+      "MASVS-CRYPTO-2": {
+        "pass": false,
+        "details": "Clés potentielles en clair détectées"
+      },
+      "MASVS-AUTH-1": {
+        "pass": true,
+        "details": "Aucun token JWT en clair"
+      },
+      "MASVS-AUTH-2": {
+        "pass": true,
+        "details": "Application non débogable"
+      },
+      "MASVS-NETWORK-1": {
+        "pass": true,
+        "details": "Trafic en clair non autorisé"
+      },
+      "MASVS-NETWORK-2": {
+        "pass": false,
+        "details": "Aucune config réseau sécurisée"
+      },
+      "MASVS-CODE-1": {
+        "pass": true,
+        "details": "Aucune bibliothèque risquée"
+      },
+      "MASVS-CODE-2": {
+        "pass": true,
+        "details": "Aucun code de debug"
+      },
+      "MASVS-RESILIENCE-1": {
+        "pass": true,
+        "details": "Obfuscation détectée (ProGuard/R8)"
+      },
+      "MASVS-RESILIENCE-2": {
+        "pass": true,
+        "details": "Détection root/jailbreak présente"
+      }
+    },
+    "satisfied": [
+      "MASVS-STORAGE-1",
+      "MASVS-STORAGE-2",
+      "MASVS-CRYPTO-1",
+      "MASVS-AUTH-1",
+      "MASVS-AUTH-2",
+      "MASVS-NETWORK-1",
+      "MASVS-CODE-1",
+      "MASVS-CODE-2",
+      "MASVS-RESILIENCE-1",
+      "MASVS-RESILIENCE-2"
+    ],
+    "missing": [
+      "MASVS-CRYPTO-2",
+      "MASVS-NETWORK-2"
+    ],
+    "score": 10,
+    "total": 12,
+    "percentage": 83
+  },
+  "mobsf_comparison": {
+    "checks": [
+      {
+        "category": "Static",
+        "check": "Manifest Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "APK Hash & Signature",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Permission Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "SBOM / Library Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Hardcoded Secrets",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "URL / IP Extraction",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Obfuscation Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "MASVS / MASTG Mapping",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Certificate Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Static",
+        "check": "Class & Method Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Root/Emulator Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "SSL Pinning Check",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Anti-Debug Indicators",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Dynamic Code Loading",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Runtime Traffic Intercept",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Frida/Xposed Detection",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Report",
+        "check": "HTML Report Generation",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "JSON / ZIP Export",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "AI Summary (LLM)",
+        "mobsf": false,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "MASVS Compliance Score",
+        "mobsf": true,
+        "ours": true
+      }
+    ],
+    "both_have": [
+      {
+        "category": "Static",
+        "check": "Manifest Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "APK Hash & Signature",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Permission Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "SBOM / Library Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Hardcoded Secrets",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "URL / IP Extraction",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Obfuscation Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "MASVS / MASTG Mapping",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Root/Emulator Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "SSL Pinning Check",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Anti-Debug Indicators",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Dynamic Code Loading",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "HTML Report Generation",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "JSON / ZIP Export",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "MASVS Compliance Score",
+        "mobsf": true,
+        "ours": true
+      }
+    ],
+    "only_mobsf": [
+      {
+        "category": "Static",
+        "check": "Certificate Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Static",
+        "check": "Class & Method Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Runtime Traffic Intercept",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Frida/Xposed Detection",
+        "mobsf": true,
+        "ours": false
+      }
+    ],
+    "only_ours": [
+      {
+        "category": "Report",
+        "check": "AI Summary (LLM)",
+        "mobsf": false,
+        "ours": true
+      }
+    ],
+    "coverage_pct": 79
+  },
+  "ai": {
+    "resume_executif": "Analyse IA non disponible — résultats calculés localement.",
+    "niveau_risque": "FAIBLE",
+    "points_forts": [
+      "Détection root présente",
+      "Obfuscation (ProGuard/R8)",
+      "Usage de cryptographie",
+      "Debug désactivé en production",
+      "Trafic HTTP en clair interdit"
+    ],
+    "vulnerabilites": [
+      "Aucune vulnérabilité critique détectée"
+    ],
+    "recommandations": [
+      "Stocker les clés dans Android Keystore",
+      "Mettre en place le SSL Pinning"
+    ],
+    "masvs_analyse": "Score MASVS : 10/12 (83%).",
+    "comparaison_mobsf": "Notre outil couvre 79% des vérifications MobSF avec en plus l'analyse IA.",
+    "_gemini_unavailable": true
+  },
+  "overall_risk_score": 30,
+  "overall_risk_level": "MOYEN"
+}

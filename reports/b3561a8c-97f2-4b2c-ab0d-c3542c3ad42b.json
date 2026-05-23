@@ -1,0 +1,451 @@
+{
+  "filename": "ezmobile.apk",
+  "analyzed_at": "22/05/2026 à 18:03:46",
+  "error": null,
+  "hashes": {
+    "sha256": "d8a612c4c4d9efa088b0a5a58689ac79eb3a65d6d41ea9d5804b4456b03f9c16",
+    "md5": "40105b7660c585cbad6d8525c7b5e73d",
+    "size_bytes": 4776487,
+    "size_kb": 4664.54,
+    "size_mb": 4.555
+  },
+  "manifest": {
+    "package_name": "com.pwnsec.ezmobile",
+    "version_name": "1.0",
+    "version_code": "1",
+    "min_sdk": "24",
+    "target_sdk": "34",
+    "activities": [
+      "com.pwnsec.ezmobile.MainActivity"
+    ],
+    "services": [],
+    "receivers": [
+      "androidx.profileinstaller.ProfileInstallReceiver"
+    ],
+    "providers": [
+      "androidx.startup.InitializationProvider"
+    ],
+    "exported_activities": [],
+    "debuggable": false,
+    "allow_backup": false,
+    "uses_cleartext": false,
+    "has_network_security_config": false
+  },
+  "permissions": {
+    "total": 1,
+    "dangerous": [],
+    "normal": [],
+    "unknown": [
+      {
+        "name": "DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "full": "com.pwnsec.ezmobile.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+        "risk": "UNKNOWN"
+      }
+    ],
+    "high_count": 0,
+    "medium_count": 0,
+    "risk_score": 0
+  },
+  "sbom": {
+    "libraries": [
+      {
+        "name": "Kotlin",
+        "vendor": "JetBrains",
+        "type": "Language",
+        "risky": false
+      },
+      {
+        "name": "Coroutines",
+        "vendor": "JetBrains",
+        "type": "Async",
+        "risky": false
+      },
+      {
+        "name": "Navigation",
+        "vendor": "AndroidX",
+        "type": "Navigation",
+        "risky": false
+      }
+    ],
+    "total": 3,
+    "native_libs": [],
+    "native_count": 0,
+    "dex_files": [
+      "classes.dex"
+    ],
+    "dex_count": 1,
+    "risky_libs": [],
+    "total_entries": 903
+  },
+  "strings": {
+    "findings": {
+      "emails": [
+        "R@5qRA.qUB"
+      ]
+    },
+    "finding_types": [
+      "emails"
+    ],
+    "dynamic_indicators": {
+      "root_detection": [
+        "su"
+      ],
+      "obfuscation": [
+        "r8"
+      ],
+      "crypto_usage": [
+        "RSA"
+      ]
+    },
+    "severity": "LOW",
+    "has_ssl_pinning": false,
+    "has_root_check": true,
+    "has_obfuscation": true,
+    "has_crypto": true,
+    "url_count": 0
+  },
+  "masvs": {
+    "results": {
+      "MASVS-STORAGE-1": {
+        "pass": true,
+        "details": "Aucune permission de stockage sensible"
+      },
+      "MASVS-STORAGE-2": {
+        "pass": true,
+        "details": "Backup désactivé"
+      },
+      "MASVS-CRYPTO-1": {
+        "pass": true,
+        "details": "Usage de primitives cryptographiques détecté"
+      },
+      "MASVS-CRYPTO-2": {
+        "pass": true,
+        "details": "Aucune clé en clair détectée"
+      },
+      "MASVS-AUTH-1": {
+        "pass": true,
+        "details": "Aucun token JWT en clair"
+      },
+      "MASVS-AUTH-2": {
+        "pass": true,
+        "details": "Application non débogable"
+      },
+      "MASVS-NETWORK-1": {
+        "pass": true,
+        "details": "Trafic en clair non autorisé"
+      },
+      "MASVS-NETWORK-2": {
+        "pass": false,
+        "details": "Aucune config réseau sécurisée"
+      },
+      "MASVS-CODE-1": {
+        "pass": true,
+        "details": "Aucune bibliothèque risquée"
+      },
+      "MASVS-CODE-2": {
+        "pass": true,
+        "details": "Aucun code de debug"
+      },
+      "MASVS-RESILIENCE-1": {
+        "pass": true,
+        "details": "Obfuscation détectée (ProGuard/R8)"
+      },
+      "MASVS-RESILIENCE-2": {
+        "pass": true,
+        "details": "Détection root/jailbreak présente"
+      }
+    },
+    "satisfied": [
+      "MASVS-STORAGE-1",
+      "MASVS-STORAGE-2",
+      "MASVS-CRYPTO-1",
+      "MASVS-CRYPTO-2",
+      "MASVS-AUTH-1",
+      "MASVS-AUTH-2",
+      "MASVS-NETWORK-1",
+      "MASVS-CODE-1",
+      "MASVS-CODE-2",
+      "MASVS-RESILIENCE-1",
+      "MASVS-RESILIENCE-2"
+    ],
+    "missing": [
+      "MASVS-NETWORK-2"
+    ],
+    "score": 11,
+    "total": 12,
+    "percentage": 92
+  },
+  "mobsf_comparison": {
+    "checks": [
+      {
+        "category": "Static",
+        "check": "Manifest Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "APK Hash & Signature",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Permission Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "SBOM / Library Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Hardcoded Secrets",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "URL / IP Extraction",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Obfuscation Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "MASVS / MASTG Mapping",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Certificate Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Static",
+        "check": "Class & Method Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Root/Emulator Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "SSL Pinning Check",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Anti-Debug Indicators",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Dynamic Code Loading",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Runtime Traffic Intercept",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Frida/Xposed Detection",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Report",
+        "check": "HTML Report Generation",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "JSON / ZIP Export",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "AI Summary (LLM)",
+        "mobsf": false,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "MASVS Compliance Score",
+        "mobsf": true,
+        "ours": true
+      }
+    ],
+    "both_have": [
+      {
+        "category": "Static",
+        "check": "Manifest Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "APK Hash & Signature",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Permission Analysis",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "SBOM / Library Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Hardcoded Secrets",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "URL / IP Extraction",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "Obfuscation Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Static",
+        "check": "MASVS / MASTG Mapping",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Root/Emulator Detection",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "SSL Pinning Check",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Anti-Debug Indicators",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Dynamic",
+        "check": "Dynamic Code Loading",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "HTML Report Generation",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "JSON / ZIP Export",
+        "mobsf": true,
+        "ours": true
+      },
+      {
+        "category": "Report",
+        "check": "MASVS Compliance Score",
+        "mobsf": true,
+        "ours": true
+      }
+    ],
+    "only_mobsf": [
+      {
+        "category": "Static",
+        "check": "Certificate Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Static",
+        "check": "Class & Method Analysis",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Runtime Traffic Intercept",
+        "mobsf": true,
+        "ours": false
+      },
+      {
+        "category": "Dynamic",
+        "check": "Frida/Xposed Detection",
+        "mobsf": true,
+        "ours": false
+      }
+    ],
+    "only_ours": [
+      {
+        "category": "Report",
+        "check": "AI Summary (LLM)",
+        "mobsf": false,
+        "ours": true
+      }
+    ],
+    "coverage_pct": 79
+  },
+  "ai": {
+    "resume_executif": "Analyse IA non disponible — résultats calculés localement.",
+    "niveau_risque": "FAIBLE",
+    "points_forts": [
+      "Détection root présente",
+      "Obfuscation (ProGuard/R8)",
+      "Usage de cryptographie",
+      "Debug désactivé en production",
+      "Trafic HTTP en clair interdit"
+    ],
+    "vulnerabilites": [
+      "Aucune vulnérabilité critique détectée"
+    ],
+    "recommandations": [
+      "Mettre en place le SSL Pinning"
+    ],
+    "masvs_analyse": "Score MASVS : 11/12 (92%).",
+    "comparaison_mobsf": "Notre outil couvre 79% des vérifications MobSF avec en plus l'analyse IA.",
+    "_gemini_unavailable": true
+  },
+  "overall_risk_score": 7,
+  "overall_risk_level": "FAIBLE"
+}
