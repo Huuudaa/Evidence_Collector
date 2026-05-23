@@ -164,6 +164,10 @@ ul.cl   { padding-left:18px; line-height:2; font-size:13px; }
     <div class="navbar-sub">Audit de sécurité mobile · MASVS / MASTG</div>
   </div>
   <div class="navbar-badge">ENSA Marrakech</div>
+<<<<<<< HEAD
+=======
+  <button id="btnApiKey" style="background:rgba(255,255,255,.18);border:none;border-radius:8px;padding:5px 12px;color:white;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;margin-left:6px" title="Configurer la clé API Gemini">&#9881; Clé API</button>
+>>>>>>> 692c93e3e7c6b3fd6054174cce46a895793dc7af
 </nav>
 
 <div class="container">
@@ -621,11 +625,49 @@ function buildUI(d) {
 }
 
 // ── Gemini — appel depuis le navigateur ────────────────────
+<<<<<<< HEAD
 var GEMINI_KEY    = "AIzaSyA0GXyrIG6YIQxzKHOYz140mZQ6tpUamUk";
 var GEMINI_MODELS = ["gemini-2.0-flash","gemini-2.0-flash-exp","gemini-1.5-flash","gemini-1.5-flash-latest"];
 var GEMINI_BASE   = "https://generativelanguage.googleapis.com/v1beta/models/";
 
 async function callGeminiFromBrowser(d) {
+=======
+var GEMINI_KEY    = localStorage.getItem("gemini_key") || "AIzaSyA0GXyrIG6YIQxzKHOYz140mZQ6tpUamUk";
+var GEMINI_MODELS = ["gemini-2.0-flash","gemini-2.0-flash-exp","gemini-1.5-flash","gemini-1.5-flash-latest"];
+var GEMINI_BASE   = "https://generativelanguage.googleapis.com/v1beta/models/";
+
+// ── Retry with backoff ───────────────────────────────────
+async function fetchWithRetry(url, opts, maxRetries, baseDelay) {
+  for (var attempt = 0; attempt <= maxRetries; attempt++) {
+    var r = await fetch(url, opts);
+    if (r.status === 429) {
+      if (attempt < maxRetries) {
+        var wait = baseDelay * Math.pow(2, attempt) + Math.random() * 1000;
+        updateAiSpinner("Limite Gemini atteinte (429) — nouvel essai dans " + Math.round(wait/1000) + "s...");
+        await new Promise(function(res){ setTimeout(res, wait); });
+        continue;
+      }
+    }
+    return r;
+  }
+}
+
+function updateAiSpinner(msg) {
+  var el = document.getElementById("aiSpinnerMsg");
+  if (el) el.textContent = msg;
+}
+
+async function callGeminiFromBrowser(d) {
+  // Show spinner with retry status
+  document.getElementById("aiContent").innerHTML =
+    '<div class="card spinner-card">'
+    +'<div class="spin-label">Connexion à Gemini Flash...</div>'
+    +'<div class="pbar-wrap" style="max-width:280px;margin:0 auto"><div class="pbar-fill" style="width:55%"></div></div>'
+    +'<div class="spin-sub" id="aiSpinnerMsg">Envoi de la requête...</div>'
+    +'</div>';
+
+
+>>>>>>> 692c93e3e7c6b3fd6054174cce46a895793dc7af
   var perms    = d.permissions || {};
   var manifest = d.manifest    || {};
   var sbom     = d.sbom        || {};
@@ -667,17 +709,32 @@ async function callGeminiFromBrowser(d) {
   for (var i = 0; i < GEMINI_MODELS.length; i++) {
     var model = GEMINI_MODELS[i];
     try {
+<<<<<<< HEAD
       var r = await fetch(GEMINI_BASE + model + ":generateContent?key=" + GEMINI_KEY, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
       });
+=======
+      var r = await fetchWithRetry(
+        GEMINI_BASE + model + ":generateContent?key=" + GEMINI_KEY,
+        { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload) },
+        3, 2000
+      );
+      if (!r) { lastErr = "Timeout après 3 retries"; continue; }
+>>>>>>> 692c93e3e7c6b3fd6054174cce46a895793dc7af
       if (r.status === 200) {
         var data = await r.json();
         var text = ((data.candidates||[{}])[0].content||{parts:[{}]}).parts[0].text;
         if (text) { aiResult = text; usedModel = model; break; }
       } else if (r.status === 404) {
         continue;
+<<<<<<< HEAD
+=======
+      } else if (r.status === 429) {
+        lastErr = "Quota dépassé (429) — essayez plus tard ou changez la clé API";
+        continue;
+>>>>>>> 692c93e3e7c6b3fd6054174cce46a895793dc7af
       } else {
         lastErr = "HTTP " + r.status;
       }
@@ -706,12 +763,41 @@ async function callGeminiFromBrowser(d) {
   renderAI(finalAI, null, usedModel);
 }
 
+<<<<<<< HEAD
+=======
+
+// ── Clé API settings ────────────────────────────────────
+document.getElementById("btnApiKey").addEventListener("click", function() {
+  var cur = localStorage.getItem("gemini_key") || "";
+  var key = prompt("Entrez votre clé API Gemini (laissez vide pour la clé par défaut) :", cur);
+  if (key !== null) {
+    if (key.trim() === "") {
+      localStorage.removeItem("gemini_key");
+      GEMINI_KEY = "AIzaSyA0GXyrIG6YIQxzKHOYz140mZQ6tpUamUk";
+      alert("Clé par défaut restaurée.");
+    } else {
+      localStorage.setItem("gemini_key", key.trim());
+      GEMINI_KEY = key.trim();
+      alert("Clé API enregistrée.");
+    }
+  }
+});
+
+
+>>>>>>> 692c93e3e7c6b3fd6054174cce46a895793dc7af
 function renderAI(ai, errMsg, model) {
   if (!ai) return;
   var modelBadge = model
     ? ' <span style="background:var(--green-bg);color:var(--green-text);border:1px solid var(--green);'
       +'border-radius:99px;padding:2px 10px;font-size:11px;font-weight:700">'+esc(model)+'</span>'
+<<<<<<< HEAD
     : "";
+=======
+    : (ai && ai._source === "local_analysis"
+      ? ' <span style="background:var(--beige);color:var(--beige-dark);border:1px solid #C9AE88;'
+        +'border-radius:99px;padding:2px 10px;font-size:11px;font-weight:700">Analyse locale</span>'
+      : "");
+>>>>>>> 692c93e3e7c6b3fd6054174cce46a895793dc7af
   var errHtml = errMsg
     ? '<div style="background:var(--amber-bg);border:1px solid var(--amber);border-radius:10px;'
       +'padding:10px 14px;margin-bottom:12px;font-size:12px;color:var(--amber-text)">'+esc(errMsg)+'</div>'
