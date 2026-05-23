@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Evidence Collector & Compliance Pack — Application Web
 ## ENSA Marrakech · Audit de sécurité mobile MASVS/MASTG
 =======
@@ -8,13 +8,13 @@
 
 > ENSA Marrakech · Génie Cyber Défense · Audit de sécurité mobile MASVS/MASTG  
 > Lachgar Mohamed (UCA / L2IS), Ezbiri Amira, SAS Houda, Bachir Soukaina, El Yamani Oumayma
->>>>>>> 692c93e3e7c6b3fd6054174cce46a895793dc7af
+
 
 ---
 
 ## Description
 
-<<<<<<< HEAD
+
 Application web Flask pour l'audit statique et dynamique d'APK Android.
 
 **Input** : Fichier APK  
@@ -390,4 +390,4 @@ Evidence_Collector/
 - Les appels Gemini Flash s'exécutent côté client (JavaScript) ; la clé API doit être gérée avec précaution.
 
 ---
->>>>>>> 692c93e3e7c6b3fd6054174cce46a895793dc7af
+
